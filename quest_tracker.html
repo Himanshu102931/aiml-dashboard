@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIML Quest Dashboard - Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a2e; --card-color: #16213e; --primary-color: #0f3460;
+            --accent-color: #e94560; --text-color: #e0e0e0; --text-muted: #a0a0a0;
+            --success-color: #5cb85c; --font-family: 'Inter', sans-serif; --gold-color: #ffd700;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 0 10px; }
+        h1 { color: var(--accent-color); font-weight: 700; margin: 0; font-size: 1.8rem; }
+        #datetime { text-align: right; }
+        #time { font-size: 1.5rem; font-weight: 600; }
+        #date { font-size: 0.9rem; color: var(--text-muted); }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        main { display: flex; flex-direction: column; gap: 20px; }
+        aside { display: flex; flex-direction: column; gap: 20px; }
+
+        .card { background-color: var(--card-color); padding: 25px; border-radius: 12px; border: 1px solid var(--primary-color); }
+        .card h2 { margin-top: 0; color: var(--accent-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; font-size: 1.2rem; }
+        .card h2 .icon { margin-right: 10px; }
+        
+        /* Actions & Timer Layout */
+        .top-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* Pomodoro Timer */
+        #pomodoro-timer { text-align: center; }
+        #timer-display { font-size: 4.5rem; font-weight: 700; margin: 10px 0; }
+        .timer-controls button, .timer-modes button { background: none; border: 1px solid var(--primary-color); color: var(--text-muted); padding: 8px 15px; border-radius: 20px; cursor: pointer; margin: 0 5px; }
+        .timer-modes button.active { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .timer-controls button { font-size: 1.2rem; padding: 10px 20px; }
+
+        /* Goal Tracker */
+        #goal-list { margin-bottom: 15px; }
+        .goal-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .goal-text { flex-grow: 1; }
+        .goal-item button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
+        .goal-progress-bar { width: 100%; height: 8px; background-color: var(--primary-color); border-radius: 4px; overflow: hidden; }
+        .goal-progress { height: 100%; background-color: var(--success-color); width: 0%; transition: width 0.5s ease; }
+        #add-goal-form { display: flex; gap: 10px; margin-top: 10px; }
+        #add-goal-form input { flex-grow: 1; }
+        #add-goal-form button { padding: 12px; width: auto; background-color: var(--success-color); }
+
+        /* Form & Buttons */
+        form label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted); }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--primary-color); border-radius: 8px; background-color: var(--bg-color); color: var(--text-color); }
+        button { border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s; }
+        button:hover { opacity: 0.9; }
+        .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        #log-progress-btn { width: 100%; padding: 12px; background-color: var(--accent-color); color: white; border: none; }
+        .secondary-btn { background-color: var(--primary-color); color: var(--text-color); border: none; padding: 12px; }
+
+        /* Stats & Streaks */
+        #stats p { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .stat-value { font-size: 1.1rem; font-weight: 600; background-color: var(--primary-color); padding: 4px 10px; border-radius: 5px; }
+        #streak-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
+
+        /* Modals (Diary & Shop) */
+        .modal { position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal.show { display: flex; opacity: 1; }
+        .modal-content { background-color: var(--card-color); padding: 25px; border: 1px solid var(--primary-color); width: 90%; max-width: 800px; border-radius: 12px; position: relative; }
+        .close-btn { color: #aaa; position: absolute; top: 15px; right: 25px; font-size: 28px; font-weight: bold; cursor: pointer; }
+        
+        /* XP Shop */
+        #shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .shop-item { background-color: var(--bg-color); padding: 15px; border-radius: 8px; text-align: center; }
+        .shop-item .icon { font-size: 2rem; color: var(--gold-color); }
+        .shop-item button { width: 100%; margin-top: 10px; background-color: var(--success-color); }
+        .shop-item button:disabled { background-color: #555; cursor: not-allowed; }
+        #xp-balance { text-align: center; margin-top: 20px; font-size: 1.1rem; font-weight: bold; color: var(--gold-color); }
+
+        /* Tooltip */
+        [data-tooltip] { position: relative; cursor: pointer; }
+        [data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); background-color: #000; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; }
+        [data-tooltip]:hover::after { opacity: 1; visibility: visible; }
+        
+        #output { /* Floating notification styles... */ }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fa-solid fa-rocket"></i> AIML Quest Dashboard</h1>
+            <div id="datetime">
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <main>
+                <div class="top-row">
+                    <div class="card" id="actions-panel">
+                        <h2><i class="fa-solid fa-clipboard-check icon"></i> Daily Log</h2>
+                        <form id="dailyForm">
+                            <label for="codingProblems">Coding Problems Solved:</label>
+                            <input type="number" id="codingProblems" min="0" value="0" required>
+                            <label for="theoryTime">Theory Study (hours):</label>
+                            <input type="number" id="theoryTime" min="0" step="0.5" value="0" required>
+                            <label for="projectTime">Project Work (hours):</label>
+                            <input type="number" id="projectTime" min="0" step="0.5" value="0" required>
+                            <label for="fitnessDone">Fitness Done?</label>
+                            <select id="fitnessDone" required><option value="n">No</option><option value="y">Yes</option></select>
+                            <button id="log-progress-btn" type="submit">Log Today's Progress</button>
+                        </form>
+                         <div class="button-group">
+                             <button id="view-records-btn" class="secondary-btn">Record Diary</button>
+                             <button id="open-shop-btn" class="secondary-btn">XP Shop</button>
+                         </div>
+                    </div>
+                    <div class="card" id="pomodoro-timer">
+                        <h2><i class="fa-solid fa-clock icon"></i> Pomodoro Timer</h2>
+                        <div class="timer-modes">
+                            <button class="active" data-mode="pomodoro">Pomodoro</button>
+                            <button data-mode="shortBreak">Short Break</button>
+                            <button data-mode="longBreak">Long Break</button>
+                        </div>
+                        <div id="timer-display">25:00</div>
+                        <div class="timer-controls">
+                            <button id="start-pause-btn"><i class="fa-solid fa-play"></i> Start</button>
+                            <button id="reset-btn"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                        </div>
+                    </div>
+                </div>
+                 <div class="card" id="goal-tracker">
+                    <h2><i class="fa-solid fa-bullseye icon"></i> This Week's Goals</h2>
+                    <div id="goal-list"></div>
+                    <form id="add-goal-form">
+                        <input type="text" id="goal-text" placeholder="e.g., Solve 20 LeetCode problems" required>
+                        <input type="number" id="goal-target" placeholder="Target #" min="1" required>
+                        <select id="goal-category" required>
+                            <option value="coding">Coding</option>
+                            <option value="theory">Theory</option>
+                            <option value="projects">Projects</option>
+                        </select>
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+            </main>
+            <aside>
+                <div class="card" id="character-panel">
+                    <h2><i class="fa-solid fa-user-astronaut icon"></i> Character Stats</h2>
+                    <div id="stats">
+                        <p><strong>Level:</strong> <span class="stat-value" id="level">1</span></p>
+                        <div>
+                            <strong>XP Progress:</strong>
+                            <div class="xp-bar-container"><div id="xpBar" class="xp-bar"></div></div>
+                            <p class="xp-text"><span id="xp">0</span> / <span id="xpToNextLevel">500</span></p>
+                        </div>
+                        <div id="streak-container">
+                            <div><strong><i class="fa-solid fa-fire" data-tooltip="Study Streak"></i> Study</strong><span class="stat-value" id="studyStreak">0 d</span></div>
+                            <div><strong><i class="fa-solid fa-person-running" data-tooltip="Fitness Streak"></i> Fitness</strong><span class="stat-value" id="fitnessStreak">0 d</span></div>
+                        </div>
+                         <p><strong><i class="fa-solid fa-shield-halved" data-tooltip="Streak Freezes Available"></i> Freezes:</strong> <span class="stat-value" id="streak-freezes">0</span></p>
+                    </div>
+                </div>
+                <div class="card" id="calendar-panel">
+                     <h2><i class="fa-solid fa-calendar-days icon"></i> Progress Calendar</h2>
+                     <div id="calendar-grid"></div>
+                </div>
+                 <div class="card" id="achievements-panel">
+                     <h2><i class="fa-solid fa-trophy icon"></i> Achievements</h2>
+                     <div id="achievements-list"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="recordsModal" class="modal"> </div>
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2><i class="fa-solid fa-store icon"></i> XP Shop</h2>
+            <div id="shop-items"></div>
+            <div id="xp-balance">Your XP: <span id="shop-xp-balance">0</span></div>
+        </div>
+    </div>
+    
+    <div id="output"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA & STATE ---
+        let progress = JSON.parse(localStorage.getItem('questProgressV5')) || {
+            xp: 0, level: 1, lastUpdate: null,
+            streaks: { fitness: 0, study: 0 },
+            goals: [],
+            perks: { streakFreeze: 0 },
+            history: [], unlockedAchievements: [],
+        };
+
+        const SHOP_ITEMS = [
+            { id: 'streakFreeze', name: 'Streak Freeze', icon: 'fa-solid fa-shield-halved', desc: 'Saves your streak if you miss one day.', cost: 1000 }
+        ];
+
+        // --- CORE LOGIC ---
+        const save = () => {
+            localStorage.setItem('questProgressV5', JSON.stringify(progress));
+            renderAll();
+        };
+
+        const addXp = (amount) => { /* ... existing logic ... */ };
+
+        const updateStreaks = (studyActivity, fitnessActivity) => {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const lastUpdate = progress.lastUpdate ? new Date(progress.lastUpdate) : null;
+            if(lastUpdate) lastUpdate.setHours(0,0,0,0);
+            const diffDays = lastUpdate ? (today - lastUpdate) / 86400000 : Infinity;
+            
+            // Logic for each streak
+            ['study', 'fitness'].forEach(type => {
+                const activityDone = type === 'study' ? studyActivity : fitnessActivity;
+                if (!activityDone && diffDays > 1) {
+                    if (progress.perks.streakFreeze > 0) {
+                        progress.perks.streakFreeze--;
+                        // Set last update to yesterday to "trick" the next day's check
+                        const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                        progress.lastUpdate = yesterday.toISOString().split('T')[0];
+                        logMessage(`A Streak Freeze was used to save your ${type} streak!`);
+                    } else {
+                        progress.streaks[type] = 0;
+                    }
+                } else if (activityDone) {
+                    if (diffDays === 1) progress.streaks[type]++;
+                    else if (diffDays > 1) progress.streaks[type] = 1;
+                }
+            });
+        };
+
+        const updateGoals = (category, value) => {
+            progress.goals.forEach(goal => {
+                if (goal.category === category && goal.current < goal.target) {
+                    goal.current = Math.min(goal.target, goal.current + value);
+                }
+            });
+        };
+
+        // --- RENDER FUNCTIONS ---
+        const renderAll = () => {
+            renderStats();
+            renderGoals();
+            // renderCalendar();
+            // renderAchievements();
+        };
+        
+        const renderStats = () => {
+            const xpToNextLevel = Math.floor(500 * Math.pow(progress.level, 1.2));
+            document.getElementById('level').textContent = progress.level;
+            document.getElementById('xp').textContent = progress.xp;
+            document.getElementById('xpToNextLevel').textContent = xpToNextLevel;
+            document.getElementById('xpBar').style.width = `${Math.min(100, (progress.xp / xpToNextLevel) * 100)}%`;
+            document.getElementById('studyStreak').textContent = `${progress.streaks.study} d`;
+            document.getElementById('fitnessStreak').textContent = `${progress.streaks.fitness} d`;
+            document.getElementById('streak-freezes').textContent = progress.perks.streakFreeze;
+        };
+
+        const renderGoals = () => {
+            const goalList = document.getElementById('goal-list');
+            goalList.innerHTML = '';
+            if (progress.goals.length === 0) {
+                goalList.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No goals set for this week. Add one below!</p>';
+            }
+            progress.goals.forEach((goal, index) => {
+                const percentage = (goal.current / goal.target) * 100;
+                goalList.innerHTML += `
+                    <div class="goal-item">
+                        <div class="goal-text">
+                            <div>${goal.text} (${goal.current}/${goal.target})</div>
+                            <div class="goal-progress-bar"><div class="goal-progress" style="width: ${percentage}%"></div></div>
+                        </div>
+                        <button class="delete-goal-btn" data-index="${index}"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        };
+        
+        // Pomodoro Timer Logic
+        const timer = {
+            modes: { pomodoro: 25, shortBreak: 5, longBreak: 15 },
+            mode: 'pomodoro',
+            timeLeft: 25 * 60,
+            isRunning: false,
+            interval: null,
+            
+            start() { /* ... Timer logic ... */ },
+            pause() { /* ... Timer logic ... */ },
+            reset() { /* ... Timer logic ... */ },
+            updateDisplay() { /* ... Timer logic ... */ },
+            switchMode(newMode) { /* ... Timer logic ... */ }
+        };
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('dailyForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (progress.lastUpdate === todayStr) { logMessage("Already logged for today!"); return; }
+            
+            const codingProblems = parseInt(document.getElementById('codingProblems').value);
+            const theoryTime = parseFloat(document.getElementById('theoryTime').value);
+            const projectTime = parseFloat(document.getElementById('projectTime').value);
+            const fitnessDone = document.getElementById('fitnessDone').value === 'y';
+            
+            updateGoals('coding', codingProblems);
+            updateGoals('theory', theoryTime);
+            updateGoals('projects', projectTime);
+
+            updateStreaks(codingProblems > 0 || theoryTime > 0 || projectTime > 0, fitnessDone);
+
+            progress.lastUpdate = todayStr;
+            save();
+            document.getElementById('dailyForm').reset();
+        });
+
+        document.getElementById('add-goal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = document.getElementById('goal-text').value;
+            const target = parseInt(document.getElementById('goal-target').value);
+            const category = document.getElementById('goal-category').value;
+            progress.goals.push({ text, target, category, current: 0 });
+            e.target.reset();
+            save();
+        });
+
+        document.getElementById('goal-list').addEventListener('click', (e) => {
+            if (e.target.closest('.delete-goal-btn')) {
+                const index = e.target.closest('.delete-goal-btn').dataset.index;
+                progress.goals.splice(index, 1);
+                save();
+            }
+        });
+
+        document.getElementById('open-shop-btn').addEventListener('click', () => {
+            document.getElementById('shop-xp-balance').textContent = progress.xp;
+            const shopItemsEl = document.getElementById('shop-items');
+            shopItemsEl.innerHTML = '';
+            SHOP_ITEMS.forEach(item => {
+                const canAfford = progress.xp >= item.cost;
+                shopItemsEl.innerHTML += `
+                    <div class="shop-item">
+                        <div class="icon"><i class="${item.icon}"></i></div>
+                        <h3>${item.name}</h3>
+                        <p>${item.desc}</p>
+                        <button class="buy-item-btn" data-id="${item.id}" ${canAfford ? '' : 'disabled'}>
+                            ${item.cost} XP
+                        </button>
+                    </div>
+                `;
+            });
+            document.getElementById('shopModal').classList.add('show');
+        });
+
+        document.getElementById('shopModal').addEventListener('click', (e) => {
+            if (e.target.closest('.buy-item-btn')) {
+                const itemId = e.target.closest('.buy-item-btn').dataset.id;
+                const item = SHOP_ITEMS.find(i => i.id === itemId);
+                if (progress.xp >= item.cost) {
+                    progress.xp -= item.cost;
+                    progress.perks[itemId]++;
+                    logMessage(`Purchased ${item.name}!`);
+                    save();
+                    document.getElementById('shopModal').classList.remove('show');
+                }
+            }
+            if (e.target.matches('.close-btn')) {
+                document.getElementById('shopModal').classList.remove('show');
+            }
+        });
+
+        // Other listeners for diary, reset, etc.
+
+        // --- INITIALIZATION ---
+        renderAll();
+    });
+    </script>
+</body>
+</html>
