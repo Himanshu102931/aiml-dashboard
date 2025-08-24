@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIML Quest Tracker - Enhanced</title>
+    <title>AIML Quest Tracker - Enhanced Pro</title>
     <link rel="icon" type="image/png" href="quest.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -22,6 +22,8 @@
             --text-muted: #94a3b8;
             --gold-color: #fbbf24;
             --light-blue: #bfdbfe;
+            --purple-color: #8b5cf6;
+            --pink-color: #ec4899;
             --font-family: 'Inter', sans-serif;
         }
 
@@ -188,6 +190,12 @@
         .status-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .three-col-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
         }
 
@@ -492,6 +500,149 @@
             background: rgba(251, 191, 36, 0.1);
         }
 
+        /* Pomodoro Timer */
+        .timer-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer-time {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 15px 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .timer-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .timer-start {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .timer-pause {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .timer-reset {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        /* Daily Challenge */
+        .challenge-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.1));
+            border: 2px solid var(--purple-color);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .challenge-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--purple-color);
+            margin-bottom: 10px;
+        }
+
+        .challenge-text {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .challenge-reward {
+            color: var(--gold-color);
+            font-weight: 600;
+        }
+
+        .challenge-completed {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success-color);
+        }
+
+        /* Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .suggestion-item {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            color: var(--light-blue);
+            margin-bottom: 5px;
+        }
+
+        /* Study Categories */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-input {
+            text-align: center;
+        }
+
+        .category-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .category-input input {
+            width: 80px;
+            text-align: center;
+            padding: 8px;
+        }
+
         /* Modals */
         .modal {
             position: fixed;
@@ -553,6 +704,10 @@
             .stats-container {
                 grid-template-columns: 1fr;
             }
+            
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         /* Motivational Quotes */
@@ -595,13 +750,47 @@
         .notification.warning {
             background: var(--warning-color);
         }
+
+        /* Readiness Score */
+        .readiness-score {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success-color) 0deg, var(--success-color) calc(var(--score, 0) * 3.6deg), var(--primary-color) calc(var(--score, 0) * 3.6deg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: var(--card-color);
+            border-radius: 50%;
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1><i class="fas fa-rocket"></i> AIML Quest Tracker</h1>
+            <h1><i class="fas fa-rocket"></i> AIML Quest Tracker Pro</h1>
             <div class="datetime-display">
                 <div id="current-time"></div>
                 <div id="current-date"></div>
@@ -623,6 +812,12 @@
                 <button class="nav-btn" data-view="achievements-view">
                     <i class="fas fa-trophy"></i> Achievements
                 </button>
+                <button class="nav-btn" data-view="timer-view">
+                    <i class="fas fa-clock"></i> Pomodoro
+                </button>
+                <button class="nav-btn" data-view="analytics-view">
+                    <i class="fas fa-brain"></i> Analytics
+                </button>
                 <button class="nav-btn" data-view="calendar-view">
                     <i class="fas fa-calendar"></i> Calendar
                 </button>
@@ -631,8 +826,18 @@
 
         <!-- Main Dashboard View -->
         <div id="main-view" class="view active">
+            <!-- Daily Challenge Card -->
+            <div id="daily-challenge" class="challenge-card">
+                <div class="challenge-title">🎯 Daily Challenge</div>
+                <div class="challenge-text" id="challenge-text">Loading challenge...</div>
+                <div class="challenge-reward" id="challenge-reward">Reward: +50 XP</div>
+                <button class="btn btn-success" onclick="completeChallenge()" id="challenge-btn" style="margin-top: 15px;">
+                    Complete Challenge
+                </button>
+            </div>
+
             <div class="main-grid">
-                <!-- Daily Input -->
+                <!-- Enhanced Daily Input with Categories -->
                 <div class="card" id="daily-input-card">
                     <div class="card-header">
                         <div style="display: flex; align-items: center;">
@@ -654,24 +859,34 @@
                     </div>
                     
                     <form id="daily-form">
-                        <div class="form-group">
-                            <label for="coding-problems">Coding Problems Solved:</label>
-                            <input type="number" id="coding-problems" min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="theory-hours">Theory Study (hours):</label>
-                            <input type="number" id="theory-hours" min="0" step="0.5" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="project-hours">Project Work (hours):</label>
-                            <input type="number" id="project-hours" min="0" step="0.5" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="fitness-done">Fitness Completed:</label>
-                            <select id="fitness-done">
-                                <option value="false">No</option>
-                                <option value="true">Yes</option>
-                            </select>
+                        <div class="category-grid">
+                            <div class="category-input">
+                                <label class="category-label">DSA Problems</label>
+                                <input type="number" id="dsa-problems" min="0" value="0">
+                            </div>
+                            <div class="category-input">
+                                <label class="category-label">System Design</label>
+                                <input type="number" id="system-design" min="0" step="0.5" value="0" placeholder="Hours">
+                            </div>
+                            <div class="category-input">
+                                <label class="category-label">AIML Study</label>
+                                <input type="number" id="aiml-study" min="0" step="0.5" value="0" placeholder="Hours">
+                            </div>
+                            <div class="category-input">
+                                <label class="category-label">Projects</label>
+                                <input type="number" id="project-hours" min="0" step="0.5" value="0" placeholder="Hours">
+                            </div>
+                            <div class="category-input">
+                                <label class="category-label">Interview Prep</label>
+                                <input type="number" id="interview-prep" min="0" step="0.5" value="0" placeholder="Hours">
+                            </div>
+                            <div class="category-input">
+                                <label class="category-label">Fitness</label>
+                                <select id="fitness-done">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="log-btn">
                             <i class="fas fa-save"></i> Log Progress
@@ -682,7 +897,7 @@
                     </form>
                 </div>
 
-                <!-- Quick Stats -->
+                <!-- Enhanced Stats with Readiness Score -->
                 <div class="card">
                     <div class="card-header">
                         <div style="display: flex; align-items: center;">
@@ -702,6 +917,15 @@
                             <span id="current-xp">0</span> / <span id="next-level-xp">500</span> XP
                         </div>
                     </div>
+                    
+                    <!-- Placement Readiness Score -->
+                    <div class="readiness-score">
+                        <h3>Placement Readiness</h3>
+                        <div class="score-circle" id="readiness-circle" style="--score: 0">
+                            <span class="score-number" id="readiness-score">0%</span>
+                        </div>
+                    </div>
+                    
                     <div class="stats-container">
                         <div class="stat-item">
                             <span class="stat-label">Study Streak</span>
@@ -752,35 +976,46 @@
             </div>
         </div>
 
-        <!-- Progress View -->
+        <!-- Enhanced Progress View -->
         <div id="progress-view" class="view">
             <div class="status-grid">
                 <div class="card">
                     <div class="card-header">
                         <div style="display: flex; align-items: center;">
                             <i class="fas fa-brain"></i>
-                            <h2>Skill Levels</h2>
+                            <h2>Skill Categories</h2>
                         </div>
                     </div>
                     <div class="skill-item">
                         <div class="skill-header">
-                            <span>Coding</span>
-                            <span>Level <span id="coding-level">1</span></span>
+                            <span>DSA</span>
+                            <span>Level <span id="dsa-level">1</span></span>
                         </div>
                         <div class="progress-container">
                             <div class="progress-bar">
-                                <div class="progress-fill" id="coding-progress" style="width: 0%"></div>
+                                <div class="progress-fill" id="dsa-progress" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
                     <div class="skill-item">
                         <div class="skill-header">
-                            <span>Theory</span>
-                            <span>Level <span id="theory-level">1</span></span>
+                            <span>System Design</span>
+                            <span>Level <span id="system-level">1</span></span>
                         </div>
                         <div class="progress-container">
                             <div class="progress-bar">
-                                <div class="progress-fill" id="theory-progress" style="width: 0%"></div>
+                                <div class="progress-fill" id="system-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>AIML</span>
+                            <span>Level <span id="aiml-level">1</span></span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="aiml-progress" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -792,6 +1027,17 @@
                         <div class="progress-container">
                             <div class="progress-bar">
                                 <div class="progress-fill" id="project-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Interview Prep</span>
+                            <span>Level <span id="interview-level">1</span></span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="interview-progress" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -824,12 +1070,14 @@
                     </p>
                 </div>
                 <div class="add-goal-form">
-                    <input type="text" id="goal-text" placeholder="Enter your goal (e.g., Solve 20 LeetCode problems)">
+                    <input type="text" id="goal-text" placeholder="Enter your goal (e.g., Solve 20 DSA problems)">
                     <input type="number" id="goal-target" placeholder="Target" min="1">
                     <select id="goal-category">
-                        <option value="coding">Coding</option>
-                        <option value="theory">Theory</option>
+                        <option value="dsa">DSA</option>
+                        <option value="system">System Design</option>
+                        <option value="aiml">AIML</option>
                         <option value="projects">Projects</option>
+                        <option value="interview">Interview</option>
                         <option value="fitness">Fitness</option>
                     </select>
                     <button type="button" class="btn btn-success" onclick="addGoal()">
@@ -856,6 +1104,75 @@
             </div>
         </div>
 
+        <!-- Pomodoro Timer View -->
+        <div id="timer-view" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-clock"></i>
+                        <h2>Pomodoro Timer</h2>
+                    </div>
+                </div>
+                <div class="timer-display">
+                    <div>Current Session: <span id="timer-session">Study</span></div>
+                    <div class="timer-time" id="timer-display">25:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn timer-start" onclick="startTimer()">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button class="timer-btn timer-pause" onclick="pauseTimer()">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button class="timer-btn timer-reset" onclick="resetTimer()">
+                            <i class="fas fa-stop"></i> Reset
+                        </button>
+                    </div>
+                    <div>
+                        <label>Timer Type: </label>
+                        <select id="timer-type" onchange="changeTimerType()">
+                            <option value="pomodoro">Pomodoro (25 min)</option>
+                            <option value="short">Short Break (5 min)</option>
+                            <option value="long">Long Break (15 min)</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="stat-item">
+                            <span>Completed Sessions Today</span>
+                            <span id="completed-sessions">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="analytics-view" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-chart-pie"></i>
+                        <h2>Progress Analytics</h2>
+                    </div>
+                </div>
+                <div class="analytics-grid" id="analytics-metrics">
+                    <!-- Metrics will be populated by JavaScript -->
+                </div>
+                <canvas id="analytics-chart" width="400" height="300"></canvas>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-lightbulb"></i>
+                        <h2>AI Suggestions</h2>
+                    </div>
+                </div>
+                <div id="suggestions-list">
+                    <!-- Suggestions will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
         <!-- Calendar View -->
         <div id="calendar-view" class="view">
             <div class="card">
@@ -876,22 +1193,47 @@
     <div id="notification" class="notification"></div>
 
     <script>
-        // Global Variables
+        // Enhanced Global Variables
         let questData = JSON.parse(localStorage.getItem('aimlQuestData')) || {
             level: 1,
             xp: 0,
             totalXp: 0,
             streaks: { study: 0, fitness: 0 },
-            skills: { coding: { level: 1, xp: 0 }, theory: { level: 1, xp: 0 }, projects: { level: 1, xp: 0 } },
+            skills: { 
+                dsa: { level: 1, xp: 0 }, 
+                system: { level: 1, xp: 0 }, 
+                aiml: { level: 1, xp: 0 },
+                projects: { level: 1, xp: 0 },
+                interview: { level: 1, xp: 0 }
+            },
             goals: [],
             achievements: [],
             dailyLogs: [],
-            lastUpdate: null
+            lastUpdate: null,
+            pomodoroSessions: 0,
+            dailyChallenge: null,
+            challengeCompleted: false
         };
 
         let selectedLogEntry = null;
-        let lastAction = null; // For undo functionality
+        let lastAction = null;
         let isUpdateMode = false;
+        let timerInterval = null;
+        let timerTime = 25 * 60; // 25 minutes in seconds
+        let timerRunning = false;
+        let currentTimerType = 'pomodoro';
+
+        // Daily Challenges Array
+        const dailyChallenges = [
+            { text: "Solve 3 DSA problems without looking at solutions", reward: 50, category: "dsa" },
+            { text: "Complete 1 hour of System Design study", reward: 40, category: "system" },
+            { text: "Work on your project for 2 hours", reward: 60, category: "projects" },
+            { text: "Study AIML concepts for 1.5 hours", reward: 45, category: "aiml" },
+            { text: "Practice 5 interview questions", reward: 35, category: "interview" },
+            { text: "Complete fitness + solve 2 DSA problems", reward: 55, category: "combo" },
+            { text: "Use Pomodoro technique for 4 sessions today", reward: 40, category: "productivity" },
+            { text: "Achieve a perfect study day (all categories)", reward: 100, category: "perfect" }
+        ];
 
         const motivationalQuotes = [
             "Every expert was once a beginner. Every pro was once an amateur.",
@@ -903,7 +1245,7 @@
             "Success doesn't just find you. You have to go out and get it.",
             "The harder you work for something, the greater you'll feel when you achieve it.",
             "Don't stop when you're tired. Stop when you're done.",
-            "Wake up with determination. Go to bed with satisfaction."
+            "Code, debug, repeat. That's the developer's way!"
         ];
 
         // Initialize the application
@@ -917,7 +1259,428 @@
             generateWeeklyCalendar();
             updateHistoryLog();
             checkForTodaysEntry();
+            initializeDailyChallenge();
+            updatePomodoroDisplay();
         });
+
+        // Daily Challenge Functions
+        function initializeDailyChallenge() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (!questData.dailyChallenge || questData.dailyChallenge.date !== today) {
+                // Generate new challenge for today
+                const randomChallenge = dailyChallenges[Math.floor(Math.random() * dailyChallenges.length)];
+                questData.dailyChallenge = {
+                    ...randomChallenge,
+                    date: today,
+                    completed: false
+                };
+                questData.challengeCompleted = false;
+                saveData();
+            }
+            
+            updateChallengeDisplay();
+        }
+
+        function updateChallengeDisplay() {
+            const challengeCard = document.getElementById('daily-challenge');
+            const challengeText = document.getElementById('challenge-text');
+            const challengeReward = document.getElementById('challenge-reward');
+            const challengeBtn = document.getElementById('challenge-btn');
+            
+            if (questData.dailyChallenge) {
+                challengeText.textContent = questData.dailyChallenge.text;
+                challengeReward.textContent = `Reward: +${questData.dailyChallenge.reward} XP`;
+                
+                if (questData.dailyChallenge.completed) {
+                    challengeCard.classList.add('challenge-completed');
+                    challengeBtn.textContent = '✅ Completed!';
+                    challengeBtn.disabled = true;
+                    challengeBtn.style.background = 'var(--success-color)';
+                }
+            }
+        }
+
+        function completeChallenge() {
+            if (questData.dailyChallenge && !questData.dailyChallenge.completed) {
+                questData.dailyChallenge.completed = true;
+                questData.challengeCompleted = true;
+                
+                // Award XP
+                questData.xp += questData.dailyChallenge.reward;
+                questData.totalXp += questData.dailyChallenge.reward;
+                
+                // Level up check
+                while (questData.xp >= getXPForNextLevel(questData.level)) {
+                    questData.xp -= getXPForNextLevel(questData.level);
+                    questData.level++;
+                }
+                
+                saveData();
+                updateDisplay();
+                updateChallengeDisplay();
+                showNotification(`Challenge completed! +${questData.dailyChallenge.reward} XP`, 'success');
+            }
+        }
+
+        // Pomodoro Timer Functions
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                timerInterval = setInterval(updateTimer, 1000);
+                showNotification('Timer started!', 'success');
+            }
+        }
+
+        function pauseTimer() {
+            if (timerRunning) {
+                timerRunning = false;
+                clearInterval(timerInterval);
+                showNotification('Timer paused', 'warning');
+            }
+        }
+
+        function resetTimer() {
+            timerRunning = false;
+            clearInterval(timerInterval);
+            changeTimerType(); // Reset to selected time
+            showNotification('Timer reset', 'warning');
+        }
+
+        function updateTimer() {
+            if (timerTime > 0) {
+                timerTime--;
+                updateTimerDisplay();
+            } else {
+                // Timer finished
+                timerRunning = false;
+                clearInterval(timerInterval);
+                
+                if (currentTimerType === 'pomodoro') {
+                    questData.pomodoroSessions++;
+                    // Award XP for completing pomodoro
+                    questData.xp += 15;
+                    questData.totalXp += 15;
+                    
+                    // Level up check
+                    while (questData.xp >= getXPForNextLevel(questData.level)) {
+                        questData.xp -= getXPForNextLevel(questData.level);
+                        questData.level++;
+                    }
+                    
+                    showNotification('Pomodoro session completed! +15 XP', 'success');
+                } else {
+                    showNotification('Break time over! Back to work!', 'success');
+                }
+                
+                saveData();
+                updateDisplay();
+                updatePomodoroDisplay();
+                resetTimer();
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerTime / 60);
+            const seconds = timerTime % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function changeTimerType() {
+            const timerType = document.getElementById('timer-type').value;
+            currentTimerType = timerType;
+            
+            switch(timerType) {
+                case 'pomodoro':
+                    timerTime = 25 * 60;
+                    document.getElementById('timer-session').textContent = 'Study';
+                    break;
+                case 'short':
+                    timerTime = 5 * 60;
+                    document.getElementById('timer-session').textContent = 'Short Break';
+                    break;
+                case 'long':
+                    timerTime = 15 * 60;
+                    document.getElementById('timer-session').textContent = 'Long Break';
+                    break;
+            }
+            updateTimerDisplay();
+        }
+
+        function updatePomodoroDisplay() {
+            document.getElementById('completed-sessions').textContent = questData.pomodoroSessions || 0;
+        }
+
+        // Analytics Functions
+        function updateAnalyticsView() {
+            updateAnalyticsMetrics();
+            updateAnalyticsChart();
+            updateSuggestions();
+        }
+
+        function updateAnalyticsMetrics() {
+            const metricsContainer = document.getElementById('analytics-metrics');
+            
+            // Calculate metrics from last 7 days
+            const last7Days = questData.dailyLogs.slice(-7);
+            const totalDSA = last7Days.reduce((sum, log) => sum + (log.dsa || 0), 0);
+            const totalHours = last7Days.reduce((sum, log) => 
+                sum + (log.system || 0) + (log.aiml || 0) + (log.projects || 0) + (log.interview || 0), 0);
+            const avgXP = last7Days.length > 0 ? Math.round(last7Days.reduce((sum, log) => sum + log.xp, 0) / last7Days.length) : 0;
+            const fitnessRate = last7Days.length > 0 ? Math.round((last7Days.filter(log => log.fitness).length / last7Days.length) * 100) : 0;
+            
+            metricsContainer.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-value">${totalDSA}</div>
+                    <div class="metric-label">DSA Problems (7d)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${totalHours.toFixed(1)}</div>
+                    <div class="metric-label">Study Hours (7d)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${avgXP}</div>
+                    <div class="metric-label">Avg Daily XP</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">${fitnessRate}%</div>
+                    <div class="metric-label">Fitness Rate</div>
+                </div>
+            `;
+        }
+
+        function updateAnalyticsChart() {
+            const ctx = document.getElementById('analytics-chart').getContext('2d');
+            
+            // Get skill distribution
+            const skillData = Object.keys(questData.skills).map(skill => ({
+                skill: skill.toUpperCase(),
+                level: questData.skills[skill].level,
+                xp: questData.skills[skill].xp
+            }));
+            
+            if (window.analyticsChart) {
+                window.analyticsChart.destroy();
+            }
+            
+            window.analyticsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: skillData.map(s => s.skill),
+                    datasets: [{
+                        label: 'Skill Levels',
+                        data: skillData.map(s => s.level),
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: Math.max(...skillData.map(s => s.level)) + 2,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#f1f5f9'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSuggestions() {
+            const suggestionsContainer = document.getElementById('suggestions-list');
+            const suggestions = generateSmartSuggestions();
+            
+            suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+                <div class="suggestion-item">
+                    <div class="suggestion-title">${suggestion.title}</div>
+                    <div>${suggestion.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function generateSmartSuggestions() {
+            const suggestions = [];
+            const last7Days = questData.dailyLogs.slice(-7);
+            
+            // Analyze patterns and generate suggestions
+            if (last7Days.length > 0) {
+                const avgDSA = last7Days.reduce((sum, log) => sum + (log.dsa || 0), 0) / last7Days.length;
+                const avgSystem = last7Days.reduce((sum, log) => sum + (log.system || 0), 0) / last7Days.length;
+                const avgAIML = last7Days.reduce((sum, log) => sum + (log.aiml || 0), 0) / last7Days.length;
+                
+                if (avgDSA < 2) {
+                    suggestions.push({
+                        title: "🔍 Focus on DSA",
+                        description: "You're averaging less than 2 DSA problems per day. Try to increase to 3-4 for better placement preparation."
+                    });
+                }
+                
+                if (avgSystem < 1) {
+                    suggestions.push({
+                        title: "🏗️ System Design Priority",
+                        description: "System Design is crucial for senior positions. Aim for at least 1 hour daily."
+                    });
+                }
+                
+                if (questData.streaks.study < 3) {
+                    suggestions.push({
+                        title: "📈 Build Study Consistency",
+                        description: "Your study streak is low. Try to maintain at least a 7-day streak for better habit formation."
+                    });
+                }
+                
+                if (questData.pomodoroSessions < 4) {
+                    suggestions.push({
+                        title: "⏰ Use Pomodoro More",
+                        description: "Pomodoro technique can improve focus. Try completing 4+ sessions daily."
+                    });
+                }
+            }
+            
+            // Level-based suggestions
+            if (questData.level < 5) {
+                suggestions.push({
+                    title: "🎯 Establish Routine",
+                    description: "Focus on building a consistent daily study routine. Small daily efforts compound over time."
+                });
+            }
+            
+            return suggestions.slice(0, 4); // Return max 4 suggestions
+        }
+
+        // Calculate Placement Readiness Score
+        function calculateReadinessScore() {
+            let score = 0;
+            
+            // Level contribution (0-30 points)
+            score += Math.min(questData.level * 3, 30);
+            
+            // Skill balance (0-25 points)
+            const skillLevels = Object.values(questData.skills).map(s => s.level);
+            const avgSkillLevel = skillLevels.reduce((sum, level) => sum + level, 0) / skillLevels.length;
+            const skillBalance = 25 - (Math.max(...skillLevels) - Math.min(...skillLevels)) * 2;
+            score += Math.max(0, skillBalance);
+            
+            // Consistency (0-20 points)
+            score += Math.min(questData.streaks.study * 2, 20);
+            
+            // Recent activity (0-15 points)
+            const last7Days = questData.dailyLogs.slice(-7);
+            score += Math.min(last7Days.length * 2, 15);
+            
+            // Project work (0-10 points)
+            const projectLevel = questData.skills.projects?.level || 1;
+            score += Math.min(projectLevel * 2, 10);
+            
+            return Math.min(100, Math.round(score));
+        }
+
+        function updateReadinessScore() {
+            const score = calculateReadinessScore();
+            document.getElementById('readiness-score').textContent = `${score}%`;
+            document.getElementById('readiness-circle').style.setProperty('--score', score);
+        }
+
+        // Enhanced logging with new categories
+        function logDailyProgress() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (questData.lastUpdate === today && !isUpdateMode) {
+                showNotification('You have already logged progress for today! Use update mode to modify.', 'error');
+                return;
+            }
+
+            const dsaProblems = parseInt(document.getElementById('dsa-problems').value) || 0;
+            const systemHours = parseFloat(document.getElementById('system-design').value) || 0;
+            const aimlHours = parseFloat(document.getElementById('aiml-study').value) || 0;
+            const projectHours = parseFloat(document.getElementById('project-hours').value) || 0;
+            const interviewHours = parseFloat(document.getElementById('interview-prep').value) || 0;
+            const fitnessDone = document.getElementById('fitness-done').value === 'true';
+
+            // Calculate XP with enhanced system
+            const dsaXP = dsaProblems * 15;
+            const systemXP = Math.floor(systemHours * 25);
+            const aimlXP = Math.floor(aimlHours * 20);
+            const projectXP = Math.floor(projectHours * 30);
+            const interviewXP = Math.floor(interviewHours * 20);
+            const fitnessXP = fitnessDone ? 20 : 0;
+            const totalDailyXP = dsaXP + systemXP + aimlXP + projectXP + interviewXP + fitnessXP;
+
+            // Update XP and level
+            questData.xp += totalDailyXP;
+            questData.totalXp += totalDailyXP;
+
+            // Level up check
+            let levelUpCount = 0;
+            while (questData.xp >= getXPForNextLevel(questData.level)) {
+                questData.xp -= getXPForNextLevel(questData.level);
+                questData.level++;
+                levelUpCount++;
+            }
+
+            // Update skills
+            updateSkill('dsa', dsaXP);
+            updateSkill('system', systemXP);
+            updateSkill('aiml', aimlXP);
+            updateSkill('projects', projectXP);
+            updateSkill('interview', interviewXP);
+
+            // Update streaks
+            const hasStudyActivity = dsaProblems > 0 || systemHours > 0 || aimlHours > 0 || projectHours > 0 || interviewHours > 0;
+            updateStreaks(hasStudyActivity, fitnessDone);
+
+            // Update goals
+            updateGoalsProgress('dsa', dsaProblems);
+            updateGoalsProgress('system', systemHours);
+            updateGoalsProgress('aiml', aimlHours);
+            updateGoalsProgress('projects', projectHours);
+            updateGoalsProgress('interview', interviewHours);
+            updateGoalsProgress('fitness', fitnessDone ? 1 : 0);
+
+            // Log the day with new structure
+            questData.dailyLogs.push({
+                date: today,
+                dsa: dsaProblems,
+                system: systemHours,
+                aiml: aimlHours,
+                projects: projectHours,
+                interview: interviewHours,
+                fitness: fitnessDone,
+                xp: totalDailyXP
+            });
+
+            // Check achievements
+            checkAchievements();
+
+            questData.lastUpdate = today;
+            saveData();
+
+            let message = `Great job! You earned ${totalDailyXP} XP today!`;
+            if (levelUpCount > 0) {
+                message += ` You leveled up ${levelUpCount} time(s)! Now Level ${questData.level}!`;
+            }
+            showNotification(message, 'success');
+
+            document.getElementById('daily-form').reset();
+            updateDisplay();
+            updateHistoryLog();
+            showUpdateOption();
+        }
 
         // Notification System
         function showNotification(message, type = 'success') {
@@ -943,9 +1706,11 @@
 
         // Populate form with existing entry
         function populateFormWithEntry(entry) {
-            document.getElementById('coding-problems').value = entry.coding || 0;
-            document.getElementById('theory-hours').value = entry.theory || 0;
+            document.getElementById('dsa-problems').value = entry.dsa || 0;
+            document.getElementById('system-design').value = entry.system || 0;
+            document.getElementById('aiml-study').value = entry.aiml || 0;
             document.getElementById('project-hours').value = entry.projects || 0;
+            document.getElementById('interview-prep').value = entry.interview || 0;
             document.getElementById('fitness-done').value = entry.fitness ? 'true' : 'false';
         }
 
@@ -1003,41 +1768,40 @@
                 return;
             }
 
-            // Store old entry for undo
             lastAction = {
                 type: 'update',
                 oldEntry: { ...questData.dailyLogs[entryIndex] },
                 index: entryIndex
             };
 
-            const codingProblems = parseInt(document.getElementById('coding-problems').value) || 0;
-            const theoryHours = parseFloat(document.getElementById('theory-hours').value) || 0;
+            const dsaProblems = parseInt(document.getElementById('dsa-problems').value) || 0;
+            const systemHours = parseFloat(document.getElementById('system-design').value) || 0;
+            const aimlHours = parseFloat(document.getElementById('aiml-study').value) || 0;
             const projectHours = parseFloat(document.getElementById('project-hours').value) || 0;
+            const interviewHours = parseFloat(document.getElementById('interview-prep').value) || 0;
             const fitnessDone = document.getElementById('fitness-done').value === 'true';
 
-            // Calculate new XP
-            const newXP = (codingProblems * 10) + (Math.floor(theoryHours * 20)) + (Math.floor(projectHours * 25)) + (fitnessDone ? 20 : 0);
+            const newXP = (dsaProblems * 15) + (Math.floor(systemHours * 25)) + (Math.floor(aimlHours * 20)) + 
+                         (Math.floor(projectHours * 30)) + (Math.floor(interviewHours * 20)) + (fitnessDone ? 20 : 0);
             const oldXP = questData.dailyLogs[entryIndex].xp;
             const xpDifference = newXP - oldXP;
 
-            // Update the entry
             questData.dailyLogs[entryIndex] = {
                 date: today,
-                coding: codingProblems,
-                theory: theoryHours,
+                dsa: dsaProblems,
+                system: systemHours,
+                aiml: aimlHours,
                 projects: projectHours,
+                interview: interviewHours,
                 fitness: fitnessDone,
                 xp: newXP
             };
 
-            // Adjust total XP and current XP
             questData.totalXp += xpDifference;
             questData.xp += xpDifference;
 
-            // Handle level changes if XP decreased
-            if (xpDifference < 0) {
-                // Recalculate level from total XP
-                let tempXP = questData.totalXP;
+            if (xpDifference < 0 && questData.xp < 0) {
+                let tempXP = questData.totalXp;
                 let newLevel = 1;
                 while (tempXP >= getXPForNextLevel(newLevel)) {
                     tempXP -= getXPForNextLevel(newLevel);
@@ -1046,7 +1810,6 @@
                 questData.level = newLevel;
                 questData.xp = tempXP;
             } else if (xpDifference > 0) {
-                // Check for level ups
                 while (questData.xp >= getXPForNextLevel(questData.level)) {
                     questData.xp -= getXPForNextLevel(questData.level);
                     questData.level++;
@@ -1080,7 +1843,6 @@
                 return;
             }
 
-            // Store for undo
             lastAction = {
                 type: 'delete',
                 entry: { ...questData.dailyLogs[entryIndex] },
@@ -1089,11 +1851,9 @@
 
             const deletedEntry = questData.dailyLogs[entryIndex];
             
-            // Remove XP
             questData.totalXp -= deletedEntry.xp;
             questData.xp -= deletedEntry.xp;
 
-            // Recalculate level if XP went negative
             if (questData.xp < 0) {
                 let tempXP = questData.totalXp;
                 let newLevel = 1;
@@ -1107,10 +1867,7 @@
                 questData.xp = tempXP;
             }
 
-            // Remove the entry
             questData.dailyLogs.splice(entryIndex, 1);
-            
-            // Update streaks (simplified - you might want more complex logic)
             updateStreaksAfterDelete();
 
             selectedLogEntry = null;
@@ -1131,12 +1888,10 @@
             }
 
             if (lastAction.type === 'delete') {
-                // Restore deleted entry
                 questData.dailyLogs.splice(lastAction.index, 0, lastAction.entry);
                 questData.totalXp += lastAction.entry.xp;
                 questData.xp += lastAction.entry.xp;
                 
-                // Recalculate level
                 while (questData.xp >= getXPForNextLevel(questData.level)) {
                     questData.xp -= getXPForNextLevel(questData.level);
                     questData.level++;
@@ -1144,7 +1899,6 @@
                 
                 showNotification('Delete action undone!', 'success');
             } else if (lastAction.type === 'update') {
-                // Restore old entry
                 const oldXP = questData.dailyLogs[lastAction.index].xp;
                 questData.dailyLogs[lastAction.index] = lastAction.oldEntry;
                 
@@ -1152,7 +1906,6 @@
                 questData.totalXp += xpDifference;
                 questData.xp += xpDifference;
                 
-                // Recalculate level
                 if (xpDifference < 0 && questData.xp < 0) {
                     let tempXP = questData.totalXp;
                     let newLevel = 1;
@@ -1173,10 +1926,8 @@
             updateHistoryLog();
         }
 
-        // Update streaks after delete (simplified version)
+        // Update streaks after delete
         function updateStreaksAfterDelete() {
-            // This is a simplified version - you might want to implement more complex logic
-            // to properly recalculate streaks based on remaining entries
             const today = new Date();
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
@@ -1201,7 +1952,6 @@
                 return;
             }
 
-            // Sort logs by date (newest first)
             const sortedLogs = [...questData.dailyLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
             
             historyLog.innerHTML = '';
@@ -1221,7 +1971,7 @@
                     <div>
                         <div class="log-date">${date}</div>
                         <div class="log-details">
-                            Coding: ${log.coding} | Theory: ${log.theory}h | Projects: ${log.projects}h | Fitness: ${log.fitness ? 'Yes' : 'No'}
+                            DSA: ${log.dsa || 0} | Sys: ${log.system || 0}h | AI: ${log.aiml || 0}h | Proj: ${log.projects || 0}h | Int: ${log.interview || 0}h | Fit: ${log.fitness ? 'Yes' : 'No'}
                         </div>
                     </div>
                     <div class="log-xp">${log.xp} XP</div>
@@ -1233,14 +1983,9 @@
 
         // Select log entry
         function selectLogEntry(log, element) {
-            // Remove previous selection
             document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('selected'));
-            
-            // Select current entry
             element.classList.add('selected');
             selectedLogEntry = log;
-            
-            // Show delete button
             document.getElementById('delete-btn').style.display = 'inline-block';
         }
 
@@ -1271,29 +2016,25 @@
         }
 
         function showView(viewId) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(view => {
                 view.classList.remove('active');
             });
             
-            // Remove active class from all nav buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Show selected view
             document.getElementById(viewId).classList.add('active');
-            
-            // Add active class to selected nav button
             document.querySelector(`[data-view="${viewId}"]`).classList.add('active');
             
-            // Update specific view content
             if (viewId === 'progress-view') {
                 updateProgressView();
             } else if (viewId === 'goals-view') {
                 updateGoalsView();
             } else if (viewId === 'achievements-view') {
                 updateAchievementsView();
+            } else if (viewId === 'analytics-view') {
+                updateAnalyticsView();
             } else if (viewId === 'calendar-view') {
                 generateWeeklyCalendar();
             }
@@ -1307,88 +2048,6 @@
             });
         }
 
-        function logDailyProgress() {
-            const today = new Date().toISOString().split('T')[0];
-            
-            // Check if already logged today (and not in update mode)
-            if (questData.lastUpdate === today && !isUpdateMode) {
-                showNotification('You have already logged progress for today! Use update mode to modify.', 'error');
-                return;
-            }
-
-            const codingProblems = parseInt(document.getElementById('coding-problems').value) || 0;
-            const theoryHours = parseFloat(document.getElementById('theory-hours').value) || 0;
-            const projectHours = parseFloat(document.getElementById('project-hours').value) || 0;
-            const fitnessDone = document.getElementById('fitness-done').value === 'true';
-
-            // Calculate XP
-            const codingXP = codingProblems * 10;
-            const theoryXP = Math.floor(theoryHours * 20);
-            const projectXP = Math.floor(projectHours * 25);
-            const fitnessXP = fitnessDone ? 20 : 0;
-            const totalDailyXP = codingXP + theoryXP + projectXP + fitnessXP;
-
-            // Update XP and level
-            questData.xp += totalDailyXP;
-            questData.totalXp += totalDailyXP;
-
-            // Level up check
-            let levelUpCount = 0;
-            while (questData.xp >= getXPForNextLevel(questData.level)) {
-                questData.xp -= getXPForNextLevel(questData.level);
-                questData.level++;
-                levelUpCount++;
-            }
-
-            // Update skills
-            updateSkill('coding', codingXP);
-            updateSkill('theory', theoryXP);
-            updateSkill('projects', projectXP);
-
-            // Update streaks
-            updateStreaks(codingProblems > 0 || theoryHours > 0 || projectHours > 0, fitnessDone);
-
-            // Update goals
-            updateGoalsProgress('coding', codingProblems);
-            updateGoalsProgress('theory', theoryHours);
-            updateGoalsProgress('projects', projectHours);
-            updateGoalsProgress('fitness', fitnessDone ? 1 : 0);
-
-            // Log the day
-            questData.dailyLogs.push({
-                date: today,
-                coding: codingProblems,
-                theory: theoryHours,
-                projects: projectHours,
-                fitness: fitnessDone,
-                xp: totalDailyXP
-            });
-
-            // Check achievements
-            checkAchievements();
-
-            // Update last update date
-            questData.lastUpdate = today;
-
-            // Save data
-            saveData();
-
-            // Show success message
-            let message = `Great job! You earned ${totalDailyXP} XP today!`;
-            if (levelUpCount > 0) {
-                message += ` You leveled up ${levelUpCount} time(s)! Now Level ${questData.level}!`;
-            }
-            showNotification(message, 'success');
-
-            // Reset form
-            document.getElementById('daily-form').reset();
-
-            // Update display
-            updateDisplay();
-            updateHistoryLog();
-            showUpdateOption();
-        }
-
         // XP and Leveling Functions
         function getXPForNextLevel(level) {
             return Math.floor(500 * Math.pow(level, 1.2));
@@ -1399,7 +2058,6 @@
             
             questData.skills[skillName].xp += xp;
             
-            // Check for skill level up
             const skillXPRequired = getXPForNextLevel(questData.skills[skillName].level);
             while (questData.skills[skillName].xp >= skillXPRequired) {
                 questData.skills[skillName].xp -= skillXPRequired;
@@ -1415,7 +2073,6 @@
             
             const lastUpdate = questData.lastUpdate ? new Date(questData.lastUpdate) : null;
             
-            // Study streak
             if (studyActivity) {
                 if (lastUpdate && isSameDay(lastUpdate, yesterday)) {
                     questData.streaks.study++;
@@ -1426,7 +2083,6 @@
                 questData.streaks.study = 0;
             }
             
-            // Fitness streak
             if (fitnessActivity) {
                 if (lastUpdate && isSameDay(lastUpdate, yesterday)) {
                     questData.streaks.fitness++;
@@ -1463,7 +2119,6 @@
                 dateAdded: new Date().toISOString().split('T')[0]
             });
 
-            // Clear form
             document.getElementById('goal-text').value = '';
             document.getElementById('goal-target').value = '';
             
@@ -1478,7 +2133,6 @@
                     goal.current = Math.min(goal.target, goal.current + value);
                     if (goal.current >= goal.target) {
                         goal.completed = true;
-                        // Award bonus XP for completing goal
                         questData.xp += 50;
                         questData.totalXp += 50;
                         showNotification(`Goal completed: ${goal.text}! +50 XP`, 'success');
@@ -1519,46 +2173,45 @@
                     condition: () => questData.level >= 10
                 },
                 {
-                    id: 'study_streak_7',
-                    name: 'Week Warrior',
-                    description: 'Maintain 7-day study streak',
-                    icon: 'fas fa-fire',
-                    condition: () => questData.streaks.study >= 7
-                },
-                {
-                    id: 'study_streak_30',
-                    name: 'Month Master',
-                    description: 'Maintain 30-day study streak',
-                    icon: 'fas fa-calendar-check',
-                    condition: () => questData.streaks.study >= 30
-                },
-                {
-                    id: 'coding_100',
-                    name: 'Code Crusher',
-                    description: 'Solve 100 coding problems total',
+                    id: 'dsa_master',
+                    name: 'DSA Master',
+                    description: 'Solve 100 DSA problems total',
                     icon: 'fas fa-code',
-                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + log.coding, 0) >= 100
+                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + (log.dsa || 0), 0) >= 100
                 },
                 {
-                    id: 'theory_100',
-                    name: 'Theory Master',
-                    description: 'Complete 100 hours of theory study',
-                    icon: 'fas fa-book',
-                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + log.theory, 0) >= 100
+                    id: 'system_architect',
+                    name: 'System Architect',
+                    description: 'Complete 50 hours of System Design',
+                    icon: 'fas fa-building',
+                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + (log.system || 0), 0) >= 50
                 },
                 {
-                    id: 'fitness_streak_30',
-                    name: 'Fitness Fanatic',
-                    description: 'Maintain 30-day fitness streak',
-                    icon: 'fas fa-dumbbell',
-                    condition: () => questData.streaks.fitness >= 30
+                    id: 'ai_expert',
+                    name: 'AI Expert',
+                    description: 'Complete 100 hours of AIML study',
+                    icon: 'fas fa-brain',
+                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + (log.aiml || 0), 0) >= 100
+                },
+                {
+                    id: 'pomodoro_master',
+                    name: 'Pomodoro Master',
+                    description: 'Complete 100 Pomodoro sessions',
+                    icon: 'fas fa-clock',
+                    condition: () => questData.pomodoroSessions >= 100
+                },
+                {
+                    id: 'consistent_coder',
+                    name: 'Consistent Coder',
+                    description: 'Maintain 30-day study streak',
+                    icon: 'fas fa-fire',
+                    condition: () => questData.streaks.study >= 30
                 }
             ];
 
             achievements.forEach(achievement => {
                 if (!questData.achievements.includes(achievement.id) && achievement.condition()) {
                     questData.achievements.push(achievement.id);
-                    // Award achievement XP
                     questData.xp += 100;
                     questData.totalXp += 100;
                     showNotification(`Achievement unlocked: ${achievement.name}! +100 XP`, 'success');
@@ -1570,6 +2223,7 @@
         function updateDisplay() {
             updateMainStats();
             updateProgressBars();
+            updateReadinessScore();
         }
 
         function updateMainStats() {
@@ -1583,29 +2237,32 @@
         }
 
         function updateProgressBars() {
-            // Main XP bar
             const xpProgress = (questData.xp / getXPForNextLevel(questData.level)) * 100;
             document.getElementById('xp-progress').style.width = `${Math.min(100, xpProgress)}%`;
         }
 
         function updateProgressView() {
-            // Update skill levels and progress bars
             Object.keys(questData.skills).forEach(skillName => {
                 const skill = questData.skills[skillName];
-                document.getElementById(`${skillName}-level`).textContent = skill.level;
+                const levelElement = document.getElementById(`${skillName}-level`);
+                const progressElement = document.getElementById(`${skillName}-progress`);
                 
-                const skillProgress = (skill.xp / getXPForNextLevel(skill.level)) * 100;
-                document.getElementById(`${skillName}-progress`).style.width = `${Math.min(100, skillProgress)}%`;
+                if (levelElement) {
+                    levelElement.textContent = skill.level;
+                }
+                
+                if (progressElement) {
+                    const skillProgress = (skill.xp / getXPForNextLevel(skill.level)) * 100;
+                    progressElement.style.width = `${Math.min(100, skillProgress)}%`;
+                }
             });
 
-            // Update weekly chart
             updateWeeklyChart();
         }
 
         function updateWeeklyChart() {
             const ctx = document.getElementById('weekly-chart').getContext('2d');
             
-            // Get last 7 days of data
             const last7Days = [];
             for (let i = 6; i >= 0; i--) {
                 const date = new Date();
@@ -1614,13 +2271,13 @@
                 const log = questData.dailyLogs.find(log => log.date === dateStr);
                 last7Days.push({
                     date: date.toLocaleDateString('en-US', { weekday: 'short' }),
-                    coding: log ? log.coding * 10 : 0,
-                    theory: log ? log.theory * 20 : 0,
-                    projects: log ? log.projects * 25 : 0
+                    dsa: log ? (log.dsa || 0) * 15 : 0,
+                    system: log ? (log.system || 0) * 25 : 0,
+                    aiml: log ? (log.aiml || 0) * 20 : 0,
+                    projects: log ? (log.projects || 0) * 30 : 0
                 });
             }
 
-            // Destroy existing chart if it exists
             if (window.weeklyChart) {
                 window.weeklyChart.destroy();
             }
@@ -1631,25 +2288,24 @@
                     labels: last7Days.map(day => day.date),
                     datasets: [
                         {
-                            label: 'Coding XP',
-                            data: last7Days.map(day => day.coding),
-                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1
+                            label: 'DSA XP',
+                            data: last7Days.map(day => day.dsa),
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)'
                         },
                         {
-                            label: 'Theory XP',
-                            data: last7Days.map(day => day.theory),
-                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            borderWidth: 1
+                            label: 'System XP',
+                            data: last7Days.map(day => day.system),
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)'
+                        },
+                        {
+                            label: 'AIML XP',
+                            data: last7Days.map(day => day.aiml),
+                            backgroundColor: 'rgba(251, 191, 36, 0.8)'
                         },
                         {
                             label: 'Projects XP',
                             data: last7Days.map(day => day.projects),
-                            backgroundColor: 'rgba(251, 191, 36, 0.8)',
-                            borderColor: 'rgba(251, 191, 36, 1)',
-                            borderWidth: 1
+                            backgroundColor: 'rgba(139, 92, 246, 0.8)'
                         }
                     ]
                 },
@@ -1658,28 +2314,16 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.2)'
-                            }
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.2)' }
                         },
                         x: {
-                            ticks: {
-                                color: '#94a3b8'
-                            },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.2)'
-                            }
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.2)' }
                         }
                     },
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: '#f1f5f9'
-                            }
-                        }
+                        legend: { labels: { color: '#f1f5f9' } }
                     }
                 }
             });
@@ -1707,7 +2351,7 @@
                 goalElement.innerHTML = `
                     <div class="goal-content">
                         <div class="goal-text">${goal.text} ${goal.completed ? '✅' : ''}</div>
-                        <div class="goal-progress">${goal.current} / ${goal.target} ${goal.category}</div>
+                        <div class="goal-progress">${goal.current} / ${goal.target} ${goal.category.toUpperCase()}</div>
                         <div class="progress-container">
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: ${progressPercentage}%"></div>
@@ -1734,11 +2378,11 @@
                 'first_day': { name: 'First Day', description: 'Complete your first daily log', icon: 'fas fa-baby' },
                 'level_5': { name: 'Rising Star', description: 'Reach Level 5', icon: 'fas fa-star' },
                 'level_10': { name: 'Expert', description: 'Reach Level 10', icon: 'fas fa-crown' },
-                'study_streak_7': { name: 'Week Warrior', description: 'Maintain 7-day study streak', icon: 'fas fa-fire' },
-                'study_streak_30': { name: 'Month Master', description: 'Maintain 30-day study streak', icon: 'fas fa-calendar-check' },
-                'coding_100': { name: 'Code Crusher', description: 'Solve 100 coding problems total', icon: 'fas fa-code' },
-                'theory_100': { name: 'Theory Master', description: 'Complete 100 hours of theory study', icon: 'fas fa-book' },
-                'fitness_streak_30': { name: 'Fitness Fanatic', description: 'Maintain 30-day fitness streak', icon: 'fas fa-dumbbell' }
+                'dsa_master': { name: 'DSA Master', description: 'Solve 100 DSA problems total', icon: 'fas fa-code' },
+                'system_architect': { name: 'System Architect', description: 'Complete 50 hours of System Design', icon: 'fas fa-building' },
+                'ai_expert': { name: 'AI Expert', description: 'Complete 100 hours of AIML study', icon: 'fas fa-brain' },
+                'pomodoro_master': { name: 'Pomodoro Master', description: 'Complete 100 Pomodoro sessions', icon: 'fas fa-clock' },
+                'consistent_coder': { name: 'Consistent Coder', description: 'Maintain 30-day study streak', icon: 'fas fa-fire' }
             };
 
             achievementsList.innerHTML = '';
@@ -1766,7 +2410,7 @@
 
             const today = new Date();
             const startOfWeek = new Date(today);
-            startOfWeek.setDate(today.getDate() - today.getDay()); // Start from Sunday
+            startOfWeek.setDate(today.getDate() - today.getDay());
 
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -1848,7 +2492,7 @@
             }
         }
 
-        // Reset function (for testing or starting fresh)
+        // Reset function
         function resetData() {
             if (confirm('Are you sure you want to reset all data? This cannot be undone!')) {
                 localStorage.removeItem('aimlQuestData');
@@ -1856,12 +2500,11 @@
             }
         }
 
-        // Utility function for debugging
+        // Utility functions
         function showStats() {
             console.log('Current Quest Data:', questData);
         }
 
-        // Additional utility functions
         function getWeeklyStats() {
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -1872,9 +2515,10 @@
             
             return {
                 totalXP: weeklyLogs.reduce((sum, log) => sum + log.xp, 0),
-                totalCoding: weeklyLogs.reduce((sum, log) => sum + log.coding, 0),
-                totalTheory: weeklyLogs.reduce((sum, log) => sum + log.theory, 0),
-                totalProjects: weeklyLogs.reduce((sum, log) => sum + log.projects, 0),
+                totalDSA: weeklyLogs.reduce((sum, log) => sum + (log.dsa || 0), 0),
+                totalSystem: weeklyLogs.reduce((sum, log) => sum + (log.system || 0), 0),
+                totalAIML: weeklyLogs.reduce((sum, log) => sum + (log.aiml || 0), 0),
+                totalProjects: weeklyLogs.reduce((sum, log) => sum + (log.projects || 0), 0),
                 fitnessCount: weeklyLogs.filter(log => log.fitness).length,
                 daysActive: weeklyLogs.length
             };
@@ -1882,18 +2526,15 @@
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            // Ctrl+Z for undo
             if (e.ctrlKey && e.key === 'z') {
                 e.preventDefault();
                 undoLastAction();
             }
             
-            // Delete key for delete selected entry
             if (e.key === 'Delete' && selectedLogEntry) {
                 deleteSelectedEntry();
             }
             
-            // Escape to clear selection
             if (e.key === 'Escape') {
                 document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('selected'));
                 selectedLogEntry = null;
@@ -1908,10 +2549,10 @@
             }
         }, 60000);
 
-        // Show weekly summary on Sundays
+        // Weekly summary check
         function checkWeeklySummary() {
             const today = new Date();
-            if (today.getDay() === 0) { // Sunday
+            if (today.getDay() === 0) {
                 const stats = getWeeklyStats();
                 if (stats.daysActive > 0) {
                     showNotification(`Weekly Summary: ${stats.totalXP} XP, ${stats.daysActive}/7 days active!`, 'success');
@@ -1919,8 +2560,26 @@
             }
         }
 
-        // Call weekly summary check on load
         setTimeout(checkWeeklySummary, 2000);
+
+        // Add skill-item class styles for progress view
+        const skillItemStyle = `
+            .skill-item {
+                margin-bottom: 20px;
+            }
+            .skill-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: var(--light-blue);
+            }
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = skillItemStyle;
+        document.head.appendChild(styleSheet);
     </script>
 </body>
 </html>
