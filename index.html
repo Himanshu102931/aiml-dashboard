@@ -3,444 +3,1924 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIML Quest Dashboard - Final</title>
+    <title>AIML Quest Tracker - Enhanced</title>
     <link rel="icon" type="image/png" href="quest.png">
-    <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #031930; --card-color: #223A59; --primary-color: #3684db;
-            --accent-color: #b3d6f9; --text-color: #758ba5; --text-muted: #d1dded;
-            --success-color: #5cb85c; --font-family: 'Inter', sans-serif; --gold-color: #ffd700;
+            --bg-color: #0f172a;
+            --card-color: #1e293b;
+            --primary-color: #334155;
+            --accent-color: #3b82f6;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gold-color: #fbbf24;
+            --light-blue: #bfdbfe;
+            --font-family: 'Inter', sans-serif;
         }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; }
-        h1 { color: var(--accent-color); font-weight: 700; margin: 0; font-size: 1.8rem; }
-        #datetime { text-align: right; }
-        #time { font-size: 1.5rem; font-weight: 600; }
-        #date { font-size: 0.9rem; color: var(--text-muted); }
 
-        nav { background-color: var(--card-color); padding: 10px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        nav button { background: none; border: 1px solid var(--primary-color); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        nav button.active, nav button:hover { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-color), #1e293b);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-        .view { display: none; }
-        .view.active { display: grid; gap: 20px; }
-        
-        #view-main { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
-        #view-status { grid-template-columns: 1fr 1fr; }
-        
-        .card { background-color: var(--card-color); padding: 25px; border-radius: 12px; border: 1px solid var(--primary-color); }
-        .card h2 { margin-top: 0; color: var(--accent-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; font-size: 1.2rem; }
-        .card h2 .icon { margin-right: 10px; }
-        
-        form label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted); }
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--primary-color); border-radius: 8px; background-color: var(--bg-color); color: var(--text-color); }
-        button { border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s; border: none; }
-        button:hover { opacity: 0.9; }
-        #log-progress-btn { width: 100%; padding: 12px; background-color: var(--accent-color); color: white; }
-        
-        #goal-list { margin-bottom: 15px; min-height: 50px; }
-        .goal-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .goal-text { flex-grow: 1; }
-        .goal-item .delete-goal-btn { background: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 5px; }
-        .goal-progress-bar { width: 100%; height: 8px; background-color: var(--primary-color); border-radius: 4px; overflow: hidden; margin-top: 5px; }
-        .goal-progress { height: 100%; background-color: var(--success-color); width: 0%; transition: width 0.5s ease; }
-        #add-goal-form { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; margin-top: 10px; }
-        #add-goal-form input, #add-goal-form select { margin-bottom: 0; }
-        #add-goal-form button { padding: 12px 15px; width: auto; background-color: var(--success-color); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; }
 
-        #stats p, #skills div { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        #stats strong, #skills strong { color: var(--text-muted); }
-        .stat-value { font-size: 1.1rem; font-weight: 600; background-color: var(--primary-color); padding: 4px 10px; border-radius: 5px; }
-        #streak-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
-        .xp-bar-container { width: 100%; background-color: var(--primary-color); border-radius: 20px; height: 10px; margin-top: 5px; overflow: hidden; }
-        .xp-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #e94560, #a10f28); border-radius: 20px; transition: width 0.5s ease-in-out; }
-        .xp-text { font-size: 0.8rem; text-align: right; color: var(--text-muted); margin-top: 4px; }
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--card-color), var(--primary-color));
+            border-radius: 15px;
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
 
-        #achievements-list { display: flex; flex-wrap: wrap; gap: 10px; }
-        .badge { background-color: var(--primary-color); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; }
+        h1 {
+            color: var(--light-blue);
+            font-weight: 700;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-        /* Modal Styles */
-        .modal { position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        .modal.show { display: flex; opacity: 1; }
-        .modal-content { background-color: var(--card-color); padding: 25px; border: 1px solid var(--primary-color); width: 90%; max-width: 800px; border-radius: 12px; position: relative; }
-        .close-btn { color: #aaa; position: absolute; top: 15px; right: 25px; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
-        .modal-filters button { width: auto; padding: 8px 15px; margin-left: 10px; font-size: 0.9rem; background-color: var(--primary-color); }
-        .modal-filters button.active { background-color: var(--accent-color); }
-        #records-container { max-height: 60vh; overflow-y: auto; margin-top: 20px; padding-right: 10px; }
-        .record-card { background-color: var(--bg-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--success-color); }
-        .record-card h4 { margin: 0 0 10px 0; color: var(--accent-color); }
-        .record-card p { margin: 5px 0; font-size: 0.9rem; color: var(--text-muted); }
-        .record-card p strong { color: var(--text-color); }
-        
-        #shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px;}
-        .shop-item { background-color: var(--bg-color); padding: 15px; border-radius: 8px; text-align: center; }
-        .shop-item .icon { font-size: 2rem; color: var(--gold-color); }
-        .shop-item button { width: 100%; margin-top: 10px; background-color: var(--success-color); }
-        .shop-item button:disabled { background-color: #555; cursor: not-allowed; }
-        #xp-balance { text-align: center; margin-top: 20px; font-size: 1.1rem; font-weight: bold; color: var(--gold-color); }
-        
-        @media (max-width: 992px) { #view-status { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) { #view-main { grid-template-columns: 1fr; } }
+        .datetime-display {
+            text-align: right;
+        }
+
+        #current-time {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold-color);
+        }
+
+        #current-date {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: var(--card-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--text-muted);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn.active,
+        .nav-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Cards */
+        .card {
+            background: linear-gradient(135deg, var(--card-color), var(--primary-color));
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .card-header h2 {
+            color: var(--light-blue);
+            font-size: 1.4rem;
+            margin-left: 10px;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        /* Action Buttons in Header */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-icon.danger {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .btn-icon.danger:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        /* Grid Layouts */
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 25px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            color: white;
+            padding: 15px 30px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+            padding: 12px 20px;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            padding: 8px 15px;
+        }
+
+        .btn-update {
+            background: var(--warning-color);
+            color: white;
+            padding: 15px 30px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Stats Display */
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-label {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold-color);
+        }
+
+        .level-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .level-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold-color);
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.5);
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            border-radius: 25px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* History Log */
+        .history-log {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .log-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .log-entry.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-left-color: var(--gold-color);
+        }
+
+        .log-date {
+            font-weight: 600;
+            color: var(--light-blue);
+        }
+
+        .log-details {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .log-xp {
+            font-weight: 700;
+            color: var(--gold-color);
+        }
+
+        .log-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Update Mode */
+        .update-mode {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+        }
+
+        .update-indicator {
+            background: var(--warning-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Goals */
+        .goals-container {
+            min-height: 200px;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .goal-content {
+            flex-grow: 1;
+        }
+
+        .goal-text {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .goal-progress {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .add-goal-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement {
+            padding: 15px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid var(--gold-color);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            color: var(--gold-color);
+            margin-bottom: 10px;
+        }
+
+        /* Weekly Calendar */
+        .weekly-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .day-cell {
+            padding: 15px 10px;
+            text-align: center;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .day-cell.completed {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: var(--success-color);
+        }
+
+        .day-cell.today {
+            border-color: var(--gold-color);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-color);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid,
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-goal-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Motivational Quotes */
+        .motivation-quote {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(251, 191, 36, 0.1));
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--gold-color);
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <header class="header">
-            <h1><i class="fa-solid fa-rocket"></i> AIML Quest Dashboard</h1>
-            <div id="datetime"><div id="time"></div><div id="date"></div></div>
+            <h1><i class="fas fa-rocket"></i> AIML Quest Tracker</h1>
+            <div class="datetime-display">
+                <div id="current-time"></div>
+                <div id="current-date"></div>
+            </div>
         </header>
 
-        <nav id="main-nav">
-            <button class="nav-btn active" data-view="view-main">Main Page</button>
-            <button class="nav-btn" data-view="view-status">Character Status</button>
-            <button id="view-records-btn">Record Diary</button>
-            <button id="open-shop-btn">XP Shop</button>
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <div class="nav-tabs">
+                <button class="nav-btn active" data-view="main-view">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-view="progress-view">
+                    <i class="fas fa-chart-line"></i> Progress
+                </button>
+                <button class="nav-btn" data-view="goals-view">
+                    <i class="fas fa-bullseye"></i> Goals
+                </button>
+                <button class="nav-btn" data-view="achievements-view">
+                    <i class="fas fa-trophy"></i> Achievements
+                </button>
+                <button class="nav-btn" data-view="calendar-view">
+                    <i class="fas fa-calendar"></i> Calendar
+                </button>
+            </div>
         </nav>
 
-        <div id="view-container">
-            <div id="view-main" class="view active">
-                <div class="card" id="actions-panel">
-                    <h2><i class="fa-solid fa-clipboard-check icon"></i> Daily Log</h2>
-                    <form id="dailyForm">
-                        <label for="codingProblems">Coding Problems Solved:</label>
-                        <input type="number" id="codingProblems" min="0" value="0" required>
-                        <label for="theoryTime">Theory Study (hours):</label>
-                        <input type="number" id="theoryTime" min="0" step="0.5" value="0" required>
-                        <label for="projectTime">Project Work (hours):</label>
-                        <input type="number" id="projectTime" min="0" step="0.5" value="0" required>
-                        <label for="fitnessDone">Fitness Done?</label>
-                        <select id="fitnessDone" required><option value="n">No</option><option value="y">Yes</option></select>
-                        <button id="log-progress-btn" type="submit">Log Today's Progress</button>
+        <!-- Main Dashboard View -->
+        <div id="main-view" class="view active">
+            <div class="main-grid">
+                <!-- Daily Input -->
+                <div class="card" id="daily-input-card">
+                    <div class="card-header">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h2>Today's Quest Log</h2>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon" onclick="clearForm()" title="Clear Form">
+                                <i class="fas fa-eraser"></i>
+                            </button>
+                            <button class="btn-icon" onclick="toggleUpdateMode()" id="update-mode-btn" title="Enter Update Mode">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="update-indicator" class="update-indicator" style="display: none;">
+                        Update Mode: Modifying today's entry
+                    </div>
+                    
+                    <form id="daily-form">
+                        <div class="form-group">
+                            <label for="coding-problems">Coding Problems Solved:</label>
+                            <input type="number" id="coding-problems" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="theory-hours">Theory Study (hours):</label>
+                            <input type="number" id="theory-hours" min="0" step="0.5" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-hours">Project Work (hours):</label>
+                            <input type="number" id="project-hours" min="0" step="0.5" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="fitness-done">Fitness Completed:</label>
+                            <select id="fitness-done">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="log-btn">
+                            <i class="fas fa-save"></i> Log Progress
+                        </button>
+                        <button type="button" class="btn btn-update" id="update-btn" onclick="updateTodaysEntry()" style="display: none;">
+                            <i class="fas fa-sync-alt"></i> Update Entry
+                        </button>
                     </form>
                 </div>
-                <div class="card" id="goal-tracker">
-                    <h2><i class="fa-solid fa-bullseye icon"></i> This Week's Goals</h2>
-                    <div id="goal-list"></div>
-                    <form id="add-goal-form">
-                        <input type="text" id="goal-text" placeholder="e.g., Solve 20 LeetCode problems" required>
-                        <input type="number" id="goal-target" placeholder="Target #" min="1" required>
-                        <select id="goal-category" required>
-                            <option value="coding">Coding</option>
-                            <option value="theory">Theory</option>
-                            <option value="projects">Projects</option>
-                        </select>
-                        <button type="submit">+</button>
-                    </form>
+
+                <!-- Quick Stats -->
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-user-astronaut"></i>
+                            <h2>Character Stats</h2>
+                        </div>
+                    </div>
+                    <div class="level-display">
+                        <div>Level</div>
+                        <div class="level-number" id="current-level">1</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="xp-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="current-xp">0</span> / <span id="next-level-xp">500</span> XP
+                        </div>
+                    </div>
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <span class="stat-label">Study Streak</span>
+                            <span class="stat-value" id="study-streak">0 days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Fitness Streak</span>
+                            <span class="stat-value" id="fitness-streak">0 days</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total XP</span>
+                            <span class="stat-value" id="total-xp">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Achievements</span>
+                            <span class="stat-value" id="achievement-count">0</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="view-status" class="view">
-                <div class="card" id="character-panel">
-                    <section id="stats">
-                        <h2><i class="fa-solid fa-user-astronaut icon"></i> Character Stats</h2>
-                        <p><strong>Level:</strong> <span class="stat-value" id="level">1</span></p>
-                        <div>
-                            <strong>XP Progress:</strong>
-                            <div class="xp-bar-container"><div id="xpBar" class="xp-bar"></div></div>
-                            <p class="xp-text"><span id="xp">0</span> / <span id="xpToNextLevel">500</span></p>
-                        </div>
-                        <div id="streak-container">
-                            <div><strong><i class="fa-solid fa-fire"></i> Study</strong><span class="stat-value" id="studyStreak">0 d</span></div>
-                            <div><strong><i class="fa-solid fa-person-running"></i> Fitness</strong><span class="stat-value" id="fitnessStreak">0 d</span></div>
-                        </div>
-                        <p><strong><i class="fa-solid fa-shield-halved"></i> Freezes:</strong> <span class="stat-value" id="streak-freezes">0</span></p>
-                    </section>
-                    <section id="skills">
-                        <h2><i class="fa-solid fa-brain icon"></i> Skill Levels</h2>
-                        <div><strong><i class="fa-solid fa-code"></i> Coding:</strong><span>Lvl <span id="codingLvl">1</span></span></div>
-                        <div><strong><i class="fa-solid fa-book-open"></i> Theory:</strong><span>Lvl <span id="theoryLvl">1</span></span></div>
-                        <div><strong><i class="fa-solid fa-lightbulb"></i> Projects:</strong><span>Lvl <span id="projectsLvl">1</span></span></div>
-                    </section>
-                </div>
-                <div>
-                    <div class="card" id="achievements-panel" style="margin-bottom: 20px;">
-                        <h2><i class="fa-solid fa-trophy icon"></i> Achievements</h2>
-                        <div id="achievements-list"></div>
+
+            <!-- Progress History -->
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-history"></i>
+                        <h2>Progress History</h2>
                     </div>
-                    <div class="card" id="progress-panel">
-                        <h2><i class="fa-solid fa-chart-line icon"></i> Weekly Effort</h2>
-                        <canvas id="progressChart"></canvas>
-                   </div>
+                    <div class="card-actions">
+                        <button class="btn-icon danger" onclick="deleteSelectedEntry()" id="delete-btn" style="display: none;" title="Delete Selected">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-icon" onclick="undoLastAction()" id="undo-btn" title="Undo Last Action">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-log" id="history-log">
+                    <p style="text-align: center; color: var(--text-muted); margin: 50px 0;">
+                        No entries yet. Start logging your progress!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Motivational Quote -->
+            <div class="motivation-quote" id="daily-quote">
+                "Every expert was once a beginner. Every pro was once an amateur."
+            </div>
+        </div>
+
+        <!-- Progress View -->
+        <div id="progress-view" class="view">
+            <div class="status-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-brain"></i>
+                            <h2>Skill Levels</h2>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Coding</span>
+                            <span>Level <span id="coding-level">1</span></span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="coding-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Theory</span>
+                            <span>Level <span id="theory-level">1</span></span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="theory-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Projects</span>
+                            <span>Level <span id="project-level">1</span></span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="project-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-chart-bar"></i>
+                            <h2>Weekly Progress</h2>
+                        </div>
+                    </div>
+                    <canvas id="weekly-chart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals View -->
+        <div id="goals-view" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-bullseye"></i>
+                        <h2>Current Goals</h2>
+                    </div>
+                </div>
+                <div class="goals-container" id="goals-list">
+                    <p style="text-align: center; color: var(--text-muted); margin: 50px 0;">
+                        No goals set yet. Add your first goal below!
+                    </p>
+                </div>
+                <div class="add-goal-form">
+                    <input type="text" id="goal-text" placeholder="Enter your goal (e.g., Solve 20 LeetCode problems)">
+                    <input type="number" id="goal-target" placeholder="Target" min="1">
+                    <select id="goal-category">
+                        <option value="coding">Coding</option>
+                        <option value="theory">Theory</option>
+                        <option value="projects">Projects</option>
+                        <option value="fitness">Fitness</option>
+                    </select>
+                    <button type="button" class="btn btn-success" onclick="addGoal()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements View -->
+        <div id="achievements-view" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-trophy"></i>
+                        <h2>Achievements Unlocked</h2>
+                    </div>
+                </div>
+                <div class="achievements-grid" id="achievements-list">
+                    <p style="text-align: center; color: var(--text-muted); margin: 50px 0; grid-column: 1/-1;">
+                        Complete tasks to unlock achievements!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div id="calendar-view" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-calendar"></i>
+                        <h2>Weekly Activity Calendar</h2>
+                    </div>
+                </div>
+                <div class="weekly-calendar" id="weekly-calendar">
+                    <!-- Calendar will be generated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="recordsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-book-journal-whills"></i> Record Diary</h2>
-                <div class="modal-filters">
-                    <button id="filter-daily" class="active">Daily</button>
-                    <button id="filter-weekly">Weekly</button>
-                    <button id="filter-monthly">Monthly</button>
-                </div>
-            </div>
-            <div id="records-container"></div>
-        </div>
-    </div>
-    <div id="shopModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2><i class="fa-solid fa-store"></i> XP Shop</h2>
-            <div id="shop-items"></div>
-            <div id="xp-balance">Your XP: <span id="shop-xp-balance">0</span></div>
-        </div>
-    </div>
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- DATA & STATE ---
-        let progress = JSON.parse(localStorage.getItem('questProgressV7')) || {
-            xp: 0, level: 1, lastUpdate: null,
-            streaks: { fitness: 0, study: 0 },
-            goals: [], perks: { streakFreeze: 0 },
-            skills: { coding: 1, theory: 1, projects: 1 },
-            history: [], unlockedAchievements: []
+        // Global Variables
+        let questData = JSON.parse(localStorage.getItem('aimlQuestData')) || {
+            level: 1,
+            xp: 0,
+            totalXp: 0,
+            streaks: { study: 0, fitness: 0 },
+            skills: { coding: { level: 1, xp: 0 }, theory: { level: 1, xp: 0 }, projects: { level: 1, xp: 0 } },
+            goals: [],
+            achievements: [],
+            dailyLogs: [],
+            lastUpdate: null
         };
-        const SHOP_ITEMS = [ { id: 'streakFreeze', name: 'Streak Freeze', icon: 'fa-solid fa-shield-halved', desc: 'Saves your streak if you miss one day.', cost: 500 } ];
-        const ACHIEVEMENTS = {
-            level5: { name: 'Level 5!', icon: 'fa-solid fa-star' },
-            streak7: { name: '7-Day Study Streak!', icon: 'fa-solid fa-fire' }
-        };
-        
-        // --- MODAL & VIEW SWITCHING ---
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const views = document.querySelectorAll('.view');
-        const shopModal = document.getElementById('shopModal');
-        const recordsModal = document.getElementById('recordsModal');
-        const showView = (viewId) => {
-            views.forEach(view => view.classList.remove('active'));
-            navButtons.forEach(btn => btn.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.querySelector(`.nav-btn[data-view="${viewId}"]`).classList.add('active');
-        };
-        navButtons.forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
-        const setupModal = (modal, openBtnId) => {
-            document.getElementById(openBtnId).addEventListener('click', () => modal.classList.add('show'));
-            modal.querySelector('.close-btn').addEventListener('click', () => modal.classList.remove('show'));
-            window.addEventListener('click', (e) => { if (e.target == modal) modal.classList.remove('show'); });
-        };
-        setupModal(shopModal, 'open-shop-btn');
-        setupModal(recordsModal, 'view-records-btn');
 
-        // --- CORE LOGIC ---
-        const save = () => {
-            localStorage.setItem('questProgressV7', JSON.stringify(progress));
-            renderAll();
-        };
-        const addXp = (amount, skill = null) => {
-            if (isNaN(amount) || amount <= 0) return;
-            progress.xp += amount;
-            let xpToNextLevel = Math.floor(500 * Math.pow(progress.level, 1.2));
-            while (progress.xp >= xpToNextLevel) {
-                progress.xp -= xpToNextLevel;
-                progress.level++;
-                xpToNextLevel = Math.floor(500 * Math.pow(progress.level, 1.2));
+        let selectedLogEntry = null;
+        let lastAction = null; // For undo functionality
+        let isUpdateMode = false;
+
+        const motivationalQuotes = [
+            "Every expert was once a beginner. Every pro was once an amateur.",
+            "The only impossible journey is the one you never begin.",
+            "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            "Your limitation—it's only your imagination.",
+            "Great things never come from comfort zones.",
+            "Dream it. Wish it. Do it.",
+            "Success doesn't just find you. You have to go out and get it.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Wake up with determination. Go to bed with satisfaction."
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            setupNavigation();
+            setupDailyForm();
+            updateDisplay();
+            showDailyQuote();
+            generateWeeklyCalendar();
+            updateHistoryLog();
+            checkForTodaysEntry();
+        });
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Check if today's entry exists
+        function checkForTodaysEntry() {
+            const today = new Date().toISOString().split('T')[0];
+            const todaysEntry = questData.dailyLogs.find(log => log.date === today);
+            
+            if (todaysEntry) {
+                populateFormWithEntry(todaysEntry);
+                showUpdateOption();
             }
-        };
-        const updateGoals = (category, value) => {
-            progress.goals.forEach(goal => {
-                if (goal.category === category && goal.current < goal.target) {
-                    goal.current = Math.min(goal.target, goal.current + value);
-                }
-            });
-        };
-        const updateStreaks = (studyActivity, fitnessActivity) => {
-            const today = new Date(); today.setHours(0, 0, 0, 0);
-            const lastUpdate = progress.lastUpdate ? new Date(progress.lastUpdate) : null;
-            if(lastUpdate) lastUpdate.setHours(0,0,0,0);
-            const diffDays = lastUpdate ? (today - lastUpdate) / (1000 * 60 * 60 * 24) : Infinity;
+        }
 
-            if (studyActivity) {
-                if (diffDays === 1) progress.streaks.study++;
-                else if (diffDays > 1) progress.streaks.study = 1;
-                // If diff is 0, do nothing
-            } else if (diffDays > 1) {
-                progress.streaks.study = 0;
-            }
+        // Populate form with existing entry
+        function populateFormWithEntry(entry) {
+            document.getElementById('coding-problems').value = entry.coding || 0;
+            document.getElementById('theory-hours').value = entry.theory || 0;
+            document.getElementById('project-hours').value = entry.projects || 0;
+            document.getElementById('fitness-done').value = entry.fitness ? 'true' : 'false';
+        }
 
-            if (fitnessActivity) {
-                if (diffDays === 1) progress.streaks.fitness++;
-                else if (diffDays > 1) progress.streaks.fitness = 1;
-            } else if (diffDays > 1) {
-                progress.streaks.fitness = 0;
-            }
-        };
+        // Show update option
+        function showUpdateOption() {
+            document.getElementById('log-btn').style.display = 'none';
+            document.getElementById('update-btn').style.display = 'block';
+            document.getElementById('update-mode-btn').innerHTML = '<i class="fas fa-times"></i>';
+            document.getElementById('update-mode-btn').title = 'Exit Update Mode';
+        }
 
-        // --- RENDER FUNCTIONS ---
-        const renderStats = () => {
-            const xpToNextLevel = Math.floor(500 * Math.pow(progress.level, 1.2));
-            document.getElementById('level').textContent = progress.level;
-            document.getElementById('xp').textContent = progress.xp;
-            document.getElementById('xpToNextLevel').textContent = xpToNextLevel;
-            document.getElementById('xpBar').style.width = `${Math.min(100, (progress.xp / xpToNextLevel) * 100)}%`;
-            document.getElementById('studyStreak').textContent = `${progress.streaks.study} d`;
-            document.getElementById('fitnessStreak').textContent = `${progress.streaks.fitness} d`;
-            document.getElementById('streak-freezes').textContent = progress.perks.streakFreeze;
-        };
-        const renderSkills = () => {
-            document.getElementById('codingLvl').textContent = progress.skills.coding;
-            document.getElementById('theoryLvl').textContent = progress.skills.theory;
-            document.getElementById('projectsLvl').textContent = progress.skills.projects;
-        };
-        const renderGoals = () => {
-            const goalList = document.getElementById('goal-list');
-            goalList.innerHTML = '';
-            if (progress.goals.length === 0) {
-                goalList.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No goals set. Add one below!</p>';
+        // Toggle update mode
+        function toggleUpdateMode() {
+            const today = new Date().toISOString().split('T')[0];
+            const todaysEntry = questData.dailyLogs.find(log => log.date === today);
+            
+            if (!todaysEntry) {
+                showNotification('No entry found for today to update!', 'error');
                 return;
             }
-            progress.goals.forEach((goal, index) => {
-                const percentage = (goal.target > 0) ? (goal.current / goal.target) * 100 : 0;
-                goalList.innerHTML += `<div class="goal-item"><div class="goal-text"><div>${goal.text} (${goal.current} / ${goal.target})</div><div class="goal-progress-bar"><div class="goal-progress" style="width: ${percentage}%"></div></div></div><button class="delete-goal-btn" data-index="${index}"><i class="fa-solid fa-trash"></i></button></div>`;
-            });
-        };
-        let chartInstance = null;
-        const renderChart = () => {
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            const last7Days = progress.history.slice(-7);
-            const labels = last7Days.map(day => new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short' }));
-            const codingData = last7Days.map(day => (day.coding || 0) * 10);
-            const theoryData = last7Days.map(day => (day.theory || 0) * 20);
-            const projectData = last7Days.map(day => (day.projects || 0) * 25);
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, { type: 'bar', data: { labels, datasets: [ { label: 'Coding XP', data: codingData, backgroundColor: '#e94560' }, { label: 'Theory XP', data: theoryData, backgroundColor: '#5cb85c' }, { label: 'Project XP', data: projectData, backgroundColor: '#0f3460' } ]}, options: { responsive: true, plugins: { legend: { labels: { color: 'white' } } }, scales: { y: { ticks: { color: 'white' } }, x: { ticks: { color: 'white' } } } } });
-        };
-        const renderShop = () => {
-            document.getElementById('shop-xp-balance').textContent = progress.xp;
-            const shopItemsEl = document.getElementById('shop-items');
-            shopItemsEl.innerHTML = '';
-            SHOP_ITEMS.forEach(item => {
-                const canAfford = progress.xp >= item.cost;
-                shopItemsEl.innerHTML += `<div class="shop-item"><div class="icon"><i class="${item.icon}"></i></div><h3>${item.name}</h3><p>${item.desc}</p><button class="buy-item-btn" data-id="${item.id}" ${canAfford ? '' : 'disabled'}>${item.cost} XP</button></div>`;
-            });
-        };
-        const renderRecords = (filter = 'daily') => {
-            const container = document.getElementById('records-container');
-            container.innerHTML = '';
-            let dataToRender = [];
-            if (filter === 'daily') {
-                dataToRender = [...progress.history].reverse();
+
+            isUpdateMode = !isUpdateMode;
+            
+            if (isUpdateMode) {
+                document.getElementById('daily-input-card').classList.add('update-mode');
+                document.getElementById('update-indicator').style.display = 'block';
+                document.getElementById('log-btn').style.display = 'none';
+                document.getElementById('update-btn').style.display = 'block';
+                document.getElementById('update-mode-btn').innerHTML = '<i class="fas fa-times"></i>';
+                document.getElementById('update-mode-btn').title = 'Exit Update Mode';
+                populateFormWithEntry(todaysEntry);
             } else {
-                const groups = {};
-                progress.history.forEach(entry => {
-                    const date = new Date(entry.date + 'T00:00:00');
-                    let key;
-                    if (filter === 'weekly') {
-                        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-                        const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-                        const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-                        key = `${date.getFullYear()}-W${weekNum}`;
-                    } else { // monthly
-                        key = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-                    }
-                    if (!groups[key]) groups[key] = { xp: 0, coding: 0, theory: 0, projects: 0, days: 0, title: key };
-                    groups[key].coding += entry.coding;
-                    groups[key].theory += entry.theory;
-                    groups[key].projects += entry.projects;
-                    groups[key].days++;
-                });
-                dataToRender = Object.values(groups).reverse();
+                exitUpdateMode();
             }
+        }
 
-            if (dataToRender.length === 0) {
-                container.innerHTML = '<p>No records found.</p>';
+        // Exit update mode
+        function exitUpdateMode() {
+            isUpdateMode = false;
+            document.getElementById('daily-input-card').classList.remove('update-mode');
+            document.getElementById('update-indicator').style.display = 'none';
+            document.getElementById('log-btn').style.display = 'block';
+            document.getElementById('update-btn').style.display = 'none';
+            document.getElementById('update-mode-btn').innerHTML = '<i class="fas fa-edit"></i>';
+            document.getElementById('update-mode-btn').title = 'Enter Update Mode';
+        }
+
+        // Update today's entry
+        function updateTodaysEntry() {
+            const today = new Date().toISOString().split('T')[0];
+            const entryIndex = questData.dailyLogs.findIndex(log => log.date === today);
+            
+            if (entryIndex === -1) {
+                showNotification('No entry found for today!', 'error');
                 return;
             }
 
-            dataToRender.forEach(item => {
-                let content = '';
-                if (filter === 'daily') {
-                    const date = new Date(item.date + 'T00:00:00');
-                    content = `<h4>${date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}</h4>
-                               <p><strong>Coding:</strong> ${item.coding} problems | <strong>Theory:</strong> ${item.theory} hrs | <strong>Projects:</strong> ${item.projects} hrs</p>`;
-                } else {
-                    content = `<h4>${item.title} (${item.days} active day${item.days > 1 ? 's' : ''})</h4>
-                               <p><strong>Total Coding:</strong> ${item.coding} problems</p>
-                               <p><strong>Total Theory:</strong> ${item.theory.toFixed(1)} hrs</p>
-                               <p><strong>Total Projects:</strong> ${item.projects.toFixed(1)} hrs</p>`;
+            // Store old entry for undo
+            lastAction = {
+                type: 'update',
+                oldEntry: { ...questData.dailyLogs[entryIndex] },
+                index: entryIndex
+            };
+
+            const codingProblems = parseInt(document.getElementById('coding-problems').value) || 0;
+            const theoryHours = parseFloat(document.getElementById('theory-hours').value) || 0;
+            const projectHours = parseFloat(document.getElementById('project-hours').value) || 0;
+            const fitnessDone = document.getElementById('fitness-done').value === 'true';
+
+            // Calculate new XP
+            const newXP = (codingProblems * 10) + (Math.floor(theoryHours * 20)) + (Math.floor(projectHours * 25)) + (fitnessDone ? 20 : 0);
+            const oldXP = questData.dailyLogs[entryIndex].xp;
+            const xpDifference = newXP - oldXP;
+
+            // Update the entry
+            questData.dailyLogs[entryIndex] = {
+                date: today,
+                coding: codingProblems,
+                theory: theoryHours,
+                projects: projectHours,
+                fitness: fitnessDone,
+                xp: newXP
+            };
+
+            // Adjust total XP and current XP
+            questData.totalXp += xpDifference;
+            questData.xp += xpDifference;
+
+            // Handle level changes if XP decreased
+            if (xpDifference < 0) {
+                // Recalculate level from total XP
+                let tempXP = questData.totalXP;
+                let newLevel = 1;
+                while (tempXP >= getXPForNextLevel(newLevel)) {
+                    tempXP -= getXPForNextLevel(newLevel);
+                    newLevel++;
                 }
-                container.innerHTML += `<div class="record-card">${content}</div>`;
-            });
-        };
-        const renderAchievements = () => { /* Logic to render achievements */ };
-        
-        const renderAll = () => { renderStats(); renderSkills(); renderGoals(); renderChart(); renderAchievements(); };
-        
-        // --- EVENT LISTENERS ---
-        document.getElementById('dailyForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const todayStr = new Date().toISOString().split('T')[0];
-            if (progress.lastUpdate === todayStr) { alert("Already logged for today!"); return; }
-            const codingProblems = parseInt(document.getElementById('codingProblems').value) || 0;
-            const theoryTime = parseFloat(document.getElementById('theoryTime').value) || 0;
-            const projectTime = parseFloat(document.getElementById('projectTime').value) || 0;
-            const fitnessDone = document.getElementById('fitnessDone').value === 'y';
-            const codingXp = codingProblems * 10;
-            const theoryXp = Math.floor(theoryTime * 20);
-            const projectXp = Math.floor(projectTime * 25);
-            const fitnessXp = fitnessDone ? 20 : 0;
-            addXp(codingXp, 'coding'); addXp(theoryXp, 'theory'); addXp(projectXp, 'projects'); addXp(fitnessXp);
-            updateGoals('coding', codingProblems); updateGoals('theory', theoryTime); updateGoals('projects', projectTime);
-            updateStreaks(codingProblems > 0 || theoryTime > 0 || projectTime > 0, fitnessDone);
-            progress.history.push({ date: todayStr, coding: codingProblems, theory: theoryTime, projects: projectTime, fitness: fitnessDone });
-            progress.lastUpdate = todayStr;
-            save();
-            document.getElementById('dailyForm').reset();
-        });
-        document.getElementById('add-goal-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            progress.goals.push({ text: e.target.elements['goal-text'].value, target: parseInt(e.target.elements['goal-target'].value), category: e.target.elements['goal-category'].value, current: 0 });
-            e.target.reset();
-            save();
-        });
-        document.getElementById('goal-list').addEventListener('click', (e) => {
-            const btn = e.target.closest('.delete-goal-btn');
-            if (btn) { progress.goals.splice(parseInt(btn.dataset.index), 1); save(); }
-        });
-        document.getElementById('open-shop-btn').addEventListener('click', renderShop);
-        document.getElementById('view-records-btn').addEventListener('click', () => renderRecords());
-        shopModal.addEventListener('click', (e) => {
-            if (e.target.closest('.buy-item-btn')) {
-                const itemId = e.target.closest('.buy-item-btn').dataset.id;
-                const item = SHOP_ITEMS.find(i => i.id === itemId);
-                if (progress.xp >= item.cost) {
-                    progress.xp -= item.cost;
-                    progress.perks[itemId] = (progress.perks[itemId] || 0) + 1;
-                    shopModal.classList.remove('show');
-                    save();
+                questData.level = newLevel;
+                questData.xp = tempXP;
+            } else if (xpDifference > 0) {
+                // Check for level ups
+                while (questData.xp >= getXPForNextLevel(questData.level)) {
+                    questData.xp -= getXPForNextLevel(questData.level);
+                    questData.level++;
                 }
             }
-        });
-        recordsModal.querySelector('.modal-filters').addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                recordsModal.querySelectorAll('.modal-filters button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                renderRecords(e.target.id.split('-')[1]);
+
+            saveData();
+            updateDisplay();
+            updateHistoryLog();
+            exitUpdateMode();
+            
+            showNotification(`Entry updated! XP ${xpDifference >= 0 ? 'increased' : 'decreased'} by ${Math.abs(xpDifference)}`, 'success');
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('daily-form').reset();
+            showNotification('Form cleared!', 'warning');
+        }
+
+        // Delete selected entry
+        function deleteSelectedEntry() {
+            if (!selectedLogEntry) {
+                showNotification('Please select an entry to delete!', 'error');
+                return;
+            }
+
+            const entryIndex = questData.dailyLogs.findIndex(log => log.date === selectedLogEntry.date);
+            if (entryIndex === -1) {
+                showNotification('Entry not found!', 'error');
+                return;
+            }
+
+            // Store for undo
+            lastAction = {
+                type: 'delete',
+                entry: { ...questData.dailyLogs[entryIndex] },
+                index: entryIndex
+            };
+
+            const deletedEntry = questData.dailyLogs[entryIndex];
+            
+            // Remove XP
+            questData.totalXp -= deletedEntry.xp;
+            questData.xp -= deletedEntry.xp;
+
+            // Recalculate level if XP went negative
+            if (questData.xp < 0) {
+                let tempXP = questData.totalXp;
+                let newLevel = 1;
+                let currentXP = 0;
+                
+                while (tempXP >= getXPForNextLevel(newLevel)) {
+                    tempXP -= getXPForNextLevel(newLevel);
+                    newLevel++;
+                }
+                questData.level = newLevel;
+                questData.xp = tempXP;
+            }
+
+            // Remove the entry
+            questData.dailyLogs.splice(entryIndex, 1);
+            
+            // Update streaks (simplified - you might want more complex logic)
+            updateStreaksAfterDelete();
+
+            selectedLogEntry = null;
+            document.getElementById('delete-btn').style.display = 'none';
+            
+            saveData();
+            updateDisplay();
+            updateHistoryLog();
+            
+            showNotification('Entry deleted successfully!', 'warning');
+        }
+
+        // Undo last action
+        function undoLastAction() {
+            if (!lastAction) {
+                showNotification('No action to undo!', 'error');
+                return;
+            }
+
+            if (lastAction.type === 'delete') {
+                // Restore deleted entry
+                questData.dailyLogs.splice(lastAction.index, 0, lastAction.entry);
+                questData.totalXp += lastAction.entry.xp;
+                questData.xp += lastAction.entry.xp;
+                
+                // Recalculate level
+                while (questData.xp >= getXPForNextLevel(questData.level)) {
+                    questData.xp -= getXPForNextLevel(questData.level);
+                    questData.level++;
+                }
+                
+                showNotification('Delete action undone!', 'success');
+            } else if (lastAction.type === 'update') {
+                // Restore old entry
+                const oldXP = questData.dailyLogs[lastAction.index].xp;
+                questData.dailyLogs[lastAction.index] = lastAction.oldEntry;
+                
+                const xpDifference = lastAction.oldEntry.xp - oldXP;
+                questData.totalXp += xpDifference;
+                questData.xp += xpDifference;
+                
+                // Recalculate level
+                if (xpDifference < 0 && questData.xp < 0) {
+                    let tempXP = questData.totalXp;
+                    let newLevel = 1;
+                    while (tempXP >= getXPForNextLevel(newLevel)) {
+                        tempXP -= getXPForNextLevel(newLevel);
+                        newLevel++;
+                    }
+                    questData.level = newLevel;
+                    questData.xp = tempXP;
+                }
+                
+                showNotification('Update action undone!', 'success');
+            }
+
+            lastAction = null;
+            saveData();
+            updateDisplay();
+            updateHistoryLog();
+        }
+
+        // Update streaks after delete (simplified version)
+        function updateStreaksAfterDelete() {
+            // This is a simplified version - you might want to implement more complex logic
+            // to properly recalculate streaks based on remaining entries
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const recentEntries = questData.dailyLogs.filter(log => {
+                const logDate = new Date(log.date);
+                return logDate >= yesterday;
+            });
+            
+            if (recentEntries.length === 0) {
+                questData.streaks.study = 0;
+                questData.streaks.fitness = 0;
+            }
+        }
+
+        // Update history log display
+        function updateHistoryLog() {
+            const historyLog = document.getElementById('history-log');
+            
+            if (questData.dailyLogs.length === 0) {
+                historyLog.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin: 50px 0;">No entries yet. Start logging your progress!</p>';
+                return;
+            }
+
+            // Sort logs by date (newest first)
+            const sortedLogs = [...questData.dailyLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            historyLog.innerHTML = '';
+            
+            sortedLogs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.className = 'log-entry';
+                logElement.onclick = () => selectLogEntry(log, logElement);
+                
+                const date = new Date(log.date).toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                logElement.innerHTML = `
+                    <div>
+                        <div class="log-date">${date}</div>
+                        <div class="log-details">
+                            Coding: ${log.coding} | Theory: ${log.theory}h | Projects: ${log.projects}h | Fitness: ${log.fitness ? 'Yes' : 'No'}
+                        </div>
+                    </div>
+                    <div class="log-xp">${log.xp} XP</div>
+                `;
+                
+                historyLog.appendChild(logElement);
+            });
+        }
+
+        // Select log entry
+        function selectLogEntry(log, element) {
+            // Remove previous selection
+            document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('selected'));
+            
+            // Select current entry
+            element.classList.add('selected');
+            selectedLogEntry = log;
+            
+            // Show delete button
+            document.getElementById('delete-btn').style.display = 'inline-block';
+        }
+
+        // Date and Time Functions
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Navigation
+        function setupNavigation() {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetView = this.getAttribute('data-view');
+                    showView(targetView);
+                });
+            });
+        }
+
+        function showView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected view
+            document.getElementById(viewId).classList.add('active');
+            
+            // Add active class to selected nav button
+            document.querySelector(`[data-view="${viewId}"]`).classList.add('active');
+            
+            // Update specific view content
+            if (viewId === 'progress-view') {
+                updateProgressView();
+            } else if (viewId === 'goals-view') {
+                updateGoalsView();
+            } else if (viewId === 'achievements-view') {
+                updateAchievementsView();
+            } else if (viewId === 'calendar-view') {
+                generateWeeklyCalendar();
+            }
+        }
+
+        // Daily Form Setup
+        function setupDailyForm() {
+            document.getElementById('daily-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                logDailyProgress();
+            });
+        }
+
+        function logDailyProgress() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Check if already logged today (and not in update mode)
+            if (questData.lastUpdate === today && !isUpdateMode) {
+                showNotification('You have already logged progress for today! Use update mode to modify.', 'error');
+                return;
+            }
+
+            const codingProblems = parseInt(document.getElementById('coding-problems').value) || 0;
+            const theoryHours = parseFloat(document.getElementById('theory-hours').value) || 0;
+            const projectHours = parseFloat(document.getElementById('project-hours').value) || 0;
+            const fitnessDone = document.getElementById('fitness-done').value === 'true';
+
+            // Calculate XP
+            const codingXP = codingProblems * 10;
+            const theoryXP = Math.floor(theoryHours * 20);
+            const projectXP = Math.floor(projectHours * 25);
+            const fitnessXP = fitnessDone ? 20 : 0;
+            const totalDailyXP = codingXP + theoryXP + projectXP + fitnessXP;
+
+            // Update XP and level
+            questData.xp += totalDailyXP;
+            questData.totalXp += totalDailyXP;
+
+            // Level up check
+            let levelUpCount = 0;
+            while (questData.xp >= getXPForNextLevel(questData.level)) {
+                questData.xp -= getXPForNextLevel(questData.level);
+                questData.level++;
+                levelUpCount++;
+            }
+
+            // Update skills
+            updateSkill('coding', codingXP);
+            updateSkill('theory', theoryXP);
+            updateSkill('projects', projectXP);
+
+            // Update streaks
+            updateStreaks(codingProblems > 0 || theoryHours > 0 || projectHours > 0, fitnessDone);
+
+            // Update goals
+            updateGoalsProgress('coding', codingProblems);
+            updateGoalsProgress('theory', theoryHours);
+            updateGoalsProgress('projects', projectHours);
+            updateGoalsProgress('fitness', fitnessDone ? 1 : 0);
+
+            // Log the day
+            questData.dailyLogs.push({
+                date: today,
+                coding: codingProblems,
+                theory: theoryHours,
+                projects: projectHours,
+                fitness: fitnessDone,
+                xp: totalDailyXP
+            });
+
+            // Check achievements
+            checkAchievements();
+
+            // Update last update date
+            questData.lastUpdate = today;
+
+            // Save data
+            saveData();
+
+            // Show success message
+            let message = `Great job! You earned ${totalDailyXP} XP today!`;
+            if (levelUpCount > 0) {
+                message += ` You leveled up ${levelUpCount} time(s)! Now Level ${questData.level}!`;
+            }
+            showNotification(message, 'success');
+
+            // Reset form
+            document.getElementById('daily-form').reset();
+
+            // Update display
+            updateDisplay();
+            updateHistoryLog();
+            showUpdateOption();
+        }
+
+        // XP and Leveling Functions
+        function getXPForNextLevel(level) {
+            return Math.floor(500 * Math.pow(level, 1.2));
+        }
+
+        function updateSkill(skillName, xp) {
+            if (xp <= 0) return;
+            
+            questData.skills[skillName].xp += xp;
+            
+            // Check for skill level up
+            const skillXPRequired = getXPForNextLevel(questData.skills[skillName].level);
+            while (questData.skills[skillName].xp >= skillXPRequired) {
+                questData.skills[skillName].xp -= skillXPRequired;
+                questData.skills[skillName].level++;
+            }
+        }
+
+        // Streak Functions
+        function updateStreaks(studyActivity, fitnessActivity) {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const lastUpdate = questData.lastUpdate ? new Date(questData.lastUpdate) : null;
+            
+            // Study streak
+            if (studyActivity) {
+                if (lastUpdate && isSameDay(lastUpdate, yesterday)) {
+                    questData.streaks.study++;
+                } else if (!lastUpdate || !isSameDay(lastUpdate, today)) {
+                    questData.streaks.study = 1;
+                }
+            } else if (lastUpdate && !isSameDay(lastUpdate, yesterday)) {
+                questData.streaks.study = 0;
+            }
+            
+            // Fitness streak
+            if (fitnessActivity) {
+                if (lastUpdate && isSameDay(lastUpdate, yesterday)) {
+                    questData.streaks.fitness++;
+                } else if (!lastUpdate || !isSameDay(lastUpdate, today)) {
+                    questData.streaks.fitness = 1;
+                }
+            } else if (lastUpdate && !isSameDay(lastUpdate, yesterday)) {
+                questData.streaks.fitness = 0;
+            }
+        }
+
+        function isSameDay(date1, date2) {
+            return date1.toDateString() === date2.toDateString();
+        }
+
+        // Goals Functions
+        function addGoal() {
+            const text = document.getElementById('goal-text').value.trim();
+            const target = parseInt(document.getElementById('goal-target').value);
+            const category = document.getElementById('goal-category').value;
+
+            if (!text || !target || target <= 0) {
+                showNotification('Please fill in all fields with valid values.', 'error');
+                return;
+            }
+
+            questData.goals.push({
+                id: Date.now(),
+                text: text,
+                target: target,
+                current: 0,
+                category: category,
+                completed: false,
+                dateAdded: new Date().toISOString().split('T')[0]
+            });
+
+            // Clear form
+            document.getElementById('goal-text').value = '';
+            document.getElementById('goal-target').value = '';
+            
+            saveData();
+            updateGoalsView();
+            showNotification('Goal added successfully!', 'success');
+        }
+
+        function updateGoalsProgress(category, value) {
+            questData.goals.forEach(goal => {
+                if (goal.category === category && !goal.completed) {
+                    goal.current = Math.min(goal.target, goal.current + value);
+                    if (goal.current >= goal.target) {
+                        goal.completed = true;
+                        // Award bonus XP for completing goal
+                        questData.xp += 50;
+                        questData.totalXp += 50;
+                        showNotification(`Goal completed: ${goal.text}! +50 XP`, 'success');
+                    }
+                }
+            });
+        }
+
+        function removeGoal(goalId) {
+            questData.goals = questData.goals.filter(goal => goal.id !== goalId);
+            saveData();
+            updateGoalsView();
+            showNotification('Goal removed!', 'warning');
+        }
+
+        // Achievements System
+        function checkAchievements() {
+            const achievements = [
+                {
+                    id: 'first_day',
+                    name: 'First Day',
+                    description: 'Complete your first daily log',
+                    icon: 'fas fa-baby',
+                    condition: () => questData.dailyLogs.length >= 1
+                },
+                {
+                    id: 'level_5',
+                    name: 'Rising Star',
+                    description: 'Reach Level 5',
+                    icon: 'fas fa-star',
+                    condition: () => questData.level >= 5
+                },
+                {
+                    id: 'level_10',
+                    name: 'Expert',
+                    description: 'Reach Level 10',
+                    icon: 'fas fa-crown',
+                    condition: () => questData.level >= 10
+                },
+                {
+                    id: 'study_streak_7',
+                    name: 'Week Warrior',
+                    description: 'Maintain 7-day study streak',
+                    icon: 'fas fa-fire',
+                    condition: () => questData.streaks.study >= 7
+                },
+                {
+                    id: 'study_streak_30',
+                    name: 'Month Master',
+                    description: 'Maintain 30-day study streak',
+                    icon: 'fas fa-calendar-check',
+                    condition: () => questData.streaks.study >= 30
+                },
+                {
+                    id: 'coding_100',
+                    name: 'Code Crusher',
+                    description: 'Solve 100 coding problems total',
+                    icon: 'fas fa-code',
+                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + log.coding, 0) >= 100
+                },
+                {
+                    id: 'theory_100',
+                    name: 'Theory Master',
+                    description: 'Complete 100 hours of theory study',
+                    icon: 'fas fa-book',
+                    condition: () => questData.dailyLogs.reduce((sum, log) => sum + log.theory, 0) >= 100
+                },
+                {
+                    id: 'fitness_streak_30',
+                    name: 'Fitness Fanatic',
+                    description: 'Maintain 30-day fitness streak',
+                    icon: 'fas fa-dumbbell',
+                    condition: () => questData.streaks.fitness >= 30
+                }
+            ];
+
+            achievements.forEach(achievement => {
+                if (!questData.achievements.includes(achievement.id) && achievement.condition()) {
+                    questData.achievements.push(achievement.id);
+                    // Award achievement XP
+                    questData.xp += 100;
+                    questData.totalXp += 100;
+                    showNotification(`Achievement unlocked: ${achievement.name}! +100 XP`, 'success');
+                }
+            });
+        }
+
+        // Display Update Functions
+        function updateDisplay() {
+            updateMainStats();
+            updateProgressBars();
+        }
+
+        function updateMainStats() {
+            document.getElementById('current-level').textContent = questData.level;
+            document.getElementById('current-xp').textContent = questData.xp;
+            document.getElementById('next-level-xp').textContent = getXPForNextLevel(questData.level);
+            document.getElementById('total-xp').textContent = questData.totalXp;
+            document.getElementById('study-streak').textContent = `${questData.streaks.study} days`;
+            document.getElementById('fitness-streak').textContent = `${questData.streaks.fitness} days`;
+            document.getElementById('achievement-count').textContent = questData.achievements.length;
+        }
+
+        function updateProgressBars() {
+            // Main XP bar
+            const xpProgress = (questData.xp / getXPForNextLevel(questData.level)) * 100;
+            document.getElementById('xp-progress').style.width = `${Math.min(100, xpProgress)}%`;
+        }
+
+        function updateProgressView() {
+            // Update skill levels and progress bars
+            Object.keys(questData.skills).forEach(skillName => {
+                const skill = questData.skills[skillName];
+                document.getElementById(`${skillName}-level`).textContent = skill.level;
+                
+                const skillProgress = (skill.xp / getXPForNextLevel(skill.level)) * 100;
+                document.getElementById(`${skillName}-progress`).style.width = `${Math.min(100, skillProgress)}%`;
+            });
+
+            // Update weekly chart
+            updateWeeklyChart();
+        }
+
+        function updateWeeklyChart() {
+            const ctx = document.getElementById('weekly-chart').getContext('2d');
+            
+            // Get last 7 days of data
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const log = questData.dailyLogs.find(log => log.date === dateStr);
+                last7Days.push({
+                    date: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                    coding: log ? log.coding * 10 : 0,
+                    theory: log ? log.theory * 20 : 0,
+                    projects: log ? log.projects * 25 : 0
+                });
+            }
+
+            // Destroy existing chart if it exists
+            if (window.weeklyChart) {
+                window.weeklyChart.destroy();
+            }
+
+            window.weeklyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: last7Days.map(day => day.date),
+                    datasets: [
+                        {
+                            label: 'Coding XP',
+                            data: last7Days.map(day => day.coding),
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Theory XP',
+                            data: last7Days.map(day => day.theory),
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Projects XP',
+                            data: last7Days.map(day => day.projects),
+                            backgroundColor: 'rgba(251, 191, 36, 0.8)',
+                            borderColor: 'rgba(251, 191, 36, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#f1f5f9'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateGoalsView() {
+            const goalsList = document.getElementById('goals-list');
+            
+            if (questData.goals.length === 0) {
+                goalsList.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin: 50px 0;">No goals set yet. Add your first goal below!</p>';
+                return;
+            }
+
+            goalsList.innerHTML = '';
+            
+            questData.goals.forEach(goal => {
+                const progressPercentage = (goal.current / goal.target) * 100;
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-item';
+                if (goal.completed) {
+                    goalElement.style.borderLeftColor = 'var(--gold-color)';
+                    goalElement.style.background = 'rgba(251, 191, 36, 0.1)';
+                }
+                
+                goalElement.innerHTML = `
+                    <div class="goal-content">
+                        <div class="goal-text">${goal.text} ${goal.completed ? '✅' : ''}</div>
+                        <div class="goal-progress">${goal.current} / ${goal.target} ${goal.category}</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeGoal(${goal.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                goalsList.appendChild(goalElement);
+            });
+        }
+
+        function updateAchievementsView() {
+            const achievementsList = document.getElementById('achievements-list');
+            
+            if (questData.achievements.length === 0) {
+                achievementsList.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin: 50px 0; grid-column: 1/-1;">Complete tasks to unlock achievements!</p>';
+                return;
+            }
+
+            const achievementData = {
+                'first_day': { name: 'First Day', description: 'Complete your first daily log', icon: 'fas fa-baby' },
+                'level_5': { name: 'Rising Star', description: 'Reach Level 5', icon: 'fas fa-star' },
+                'level_10': { name: 'Expert', description: 'Reach Level 10', icon: 'fas fa-crown' },
+                'study_streak_7': { name: 'Week Warrior', description: 'Maintain 7-day study streak', icon: 'fas fa-fire' },
+                'study_streak_30': { name: 'Month Master', description: 'Maintain 30-day study streak', icon: 'fas fa-calendar-check' },
+                'coding_100': { name: 'Code Crusher', description: 'Solve 100 coding problems total', icon: 'fas fa-code' },
+                'theory_100': { name: 'Theory Master', description: 'Complete 100 hours of theory study', icon: 'fas fa-book' },
+                'fitness_streak_30': { name: 'Fitness Fanatic', description: 'Maintain 30-day fitness streak', icon: 'fas fa-dumbbell' }
+            };
+
+            achievementsList.innerHTML = '';
+            
+            questData.achievements.forEach(achievementId => {
+                const achievement = achievementData[achievementId];
+                if (achievement) {
+                    const achievementElement = document.createElement('div');
+                    achievementElement.className = 'achievement';
+                    achievementElement.innerHTML = `
+                        <div class="achievement-icon">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <h4>${achievement.name}</h4>
+                        <p>${achievement.description}</p>
+                    `;
+                    achievementsList.appendChild(achievementElement);
+                }
+            });
+        }
+
+        function generateWeeklyCalendar() {
+            const calendar = document.getElementById('weekly-calendar');
+            calendar.innerHTML = '';
+
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay()); // Start from Sunday
+
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                const log = questData.dailyLogs.find(log => log.date === dateStr);
+                
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day-cell';
+                
+                if (dateStr === today.toISOString().split('T')[0]) {
+                    dayElement.classList.add('today');
+                }
+                
+                if (log) {
+                    dayElement.classList.add('completed');
+                }
+                
+                dayElement.innerHTML = `
+                    <div>${days[i]}</div>
+                    <div>${date.getDate()}</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px;">
+                        ${log ? `${log.xp} XP` : '0 XP'}
+                    </div>
+                `;
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function showDailyQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('daily-quote').textContent = `"${randomQuote}"`;
+        }
+
+        // Data Management
+        function saveData() {
+            try {
+                localStorage.setItem('aimlQuestData', JSON.stringify(questData));
+            } catch (e) {
+                showNotification('Error saving data!', 'error');
+            }
+        }
+
+        function exportData() {
+            try {
+                const dataStr = JSON.stringify(questData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'aiml_quest_backup.json';
+                link.click();
+                showNotification('Data exported successfully!', 'success');
+            } catch (e) {
+                showNotification('Error exporting data!', 'error');
+            }
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        questData = importedData;
+                        saveData();
+                        updateDisplay();
+                        updateHistoryLog();
+                        showNotification('Data imported successfully!', 'success');
+                    } catch (error) {
+                        showNotification('Error importing data: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Reset function (for testing or starting fresh)
+        function resetData() {
+            if (confirm('Are you sure you want to reset all data? This cannot be undone!')) {
+                localStorage.removeItem('aimlQuestData');
+                location.reload();
+            }
+        }
+
+        // Utility function for debugging
+        function showStats() {
+            console.log('Current Quest Data:', questData);
+        }
+
+        // Additional utility functions
+        function getWeeklyStats() {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            const weeklyLogs = questData.dailyLogs.filter(log => 
+                new Date(log.date) >= oneWeekAgo
+            );
+            
+            return {
+                totalXP: weeklyLogs.reduce((sum, log) => sum + log.xp, 0),
+                totalCoding: weeklyLogs.reduce((sum, log) => sum + log.coding, 0),
+                totalTheory: weeklyLogs.reduce((sum, log) => sum + log.theory, 0),
+                totalProjects: weeklyLogs.reduce((sum, log) => sum + log.projects, 0),
+                fitnessCount: weeklyLogs.filter(log => log.fitness).length,
+                daysActive: weeklyLogs.length
+            };
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Z for undo
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undoLastAction();
+            }
+            
+            // Delete key for delete selected entry
+            if (e.key === 'Delete' && selectedLogEntry) {
+                deleteSelectedEntry();
+            }
+            
+            // Escape to clear selection
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('selected'));
+                selectedLogEntry = null;
+                document.getElementById('delete-btn').style.display = 'none';
             }
         });
 
-        // --- INITIALIZATION ---
-        const updateTime = () => {
-            const now = new Date();
-            document.getElementById('time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').textContent = now.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        };
-        setInterval(updateTime, 1000);
-        updateTime();
-        showView('view-main');
-        renderAll();
-    });
+        // Auto-save every minute
+        setInterval(() => {
+            if (questData) {
+                saveData();
+            }
+        }, 60000);
+
+        // Show weekly summary on Sundays
+        function checkWeeklySummary() {
+            const today = new Date();
+            if (today.getDay() === 0) { // Sunday
+                const stats = getWeeklyStats();
+                if (stats.daysActive > 0) {
+                    showNotification(`Weekly Summary: ${stats.totalXP} XP, ${stats.daysActive}/7 days active!`, 'success');
+                }
+            }
+        }
+
+        // Call weekly summary check on load
+        setTimeout(checkWeeklySummary, 2000);
     </script>
 </body>
-
 </html>
